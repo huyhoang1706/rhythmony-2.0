@@ -1,0 +1,59 @@
+type Query {
+    genres: [Genre!]!
+    artists: [Artist!]!
+    artist(id: String!): Artist
+}
+
+type Mutation {
+    createArtist(artist: ArtistInput): Artist!
+}
+
+type Genre {
+    name: String!
+}
+
+type Artist {
+    id: String!
+    name: String!
+    bio: String
+    type: String!
+    popularity: Int
+    image: String
+    genres: [Genre!]!
+    albums: [Album!]
+    tracks: [Track!]
+}
+
+type Album {
+    id: String!
+    title: String!
+    albumType: String!
+    type: String!
+    totalTracks: Int
+    releaseDate: String
+    image: String
+    label: String
+    popularity: Int
+    genres: [Genre!]!
+    artists: [Artist!]
+    tracks: [Track!]
+}
+
+type Track {
+    id: String!
+    title: String!
+    discNumber: Int!
+    durationMs: Int
+    explicit: Boolean
+    type: String!
+    lyrics: String
+    popularity: Int
+    artists: [Artist!]!
+    albums: [Album!]!
+}
+
+input ArtistInput {
+    name: String!
+    bio: String
+    image: String
+}

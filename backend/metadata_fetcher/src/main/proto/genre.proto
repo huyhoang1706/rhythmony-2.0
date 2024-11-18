@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package pb;
+option java_multiple_files = true;
+
+service GenreService {
+  rpc GetGenres(GenreRequest) returns (GenreResponse) {}
+}
+
+message Genre {
+  string name = 1;
+}
+
+message GenreRequest {
+}
+
+message GenreResponse {
+  repeated Genre genres = 1;
+}

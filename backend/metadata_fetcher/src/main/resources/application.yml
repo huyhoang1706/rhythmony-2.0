@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: metadata-dgs
+
+
+metadata:
+  grpc:
+    service:
+      host: localhost
+      port: 9090
+
+server:
+  port: 5000
