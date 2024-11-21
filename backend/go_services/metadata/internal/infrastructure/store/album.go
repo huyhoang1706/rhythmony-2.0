@@ -41,7 +41,7 @@ func (a *AlbumRepository) Delete(ctx context.Context, id string) error {
 	panic("implement me")
 }
 
-func (a *AlbumRepository) FindAllByPagination(ctx context.Context, pageSize, pageNo int) (*vo.Page, error) {
+func (a *AlbumRepository) FindAllByPagination(ctx context.Context, pageSize, pageNo int) (*vo.Page[*entities.Album], error) {
 	//TODO implement me
 	panic("implement me")
 }

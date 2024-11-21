@@ -6,5 +6,5 @@ import (
 
 type TrackRepository interface {
 	ICrudRepository[*entities.Track, string]
-	IPagingRepository[*entities.Track, string]
+	IPagingRepository[*entities.Track]
 }

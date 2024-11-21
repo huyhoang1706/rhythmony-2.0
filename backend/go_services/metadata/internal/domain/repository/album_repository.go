@@ -6,5 +6,5 @@ import (
 
 type IAlbumRepository interface {
 	ICrudRepository[*entities.Album, string]
-	IPagingRepository[*entities.Album, string]
+	IPagingRepository[*entities.Album]
 }

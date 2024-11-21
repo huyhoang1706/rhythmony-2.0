@@ -66,7 +66,7 @@ func (r *ArtistRepository) Delete(ctx context.Context, id string) error {
 	return nil
 }
 
-func (r *ArtistRepository) FindAllByPagination(ctx context.Context, pageSize, pageNo int) (*vo.Page, error) {
+func (r *ArtistRepository) FindAllByPagination(ctx context.Context, pageSize, pageNo int) (*vo.Page[*entities.Artist], error) {
 	r.logger.Info("Find by pagination", zap.Int("pageSize", pageSize), zap.Int("pageNo", pageNo))
 	var artists []*entities.Artist
 	var totalElements int64
@@ -79,7 +79,7 @@ func (r *ArtistRepository) FindAllByPagination(ctx context.Context, pageSize, pa
 		r.logger.Error("Fail to find artists by pagination")
 		return nil, err
 	}
-	page := vo.Page{
+	page := vo.Page[*entities.Artist]{
 		PageSize:      pageSize,
 		PageNo:        pageNo,
 		TotalPages:    totalPages,

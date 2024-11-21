@@ -6,6 +6,6 @@ import (
 	"rhythmony.com/metadata/internal/domain/vo"
 )
 
-type IPagingRepository[T any, ID Serializable] interface {
-	FindAllByPagination(ctx context.Context, pageSize, pageNo int) (*vo.Page, error)
+type IPagingRepository[T any] interface {
+	FindAllByPagination(ctx context.Context, pageSize, pageNo int) (*vo.Page[T], error)
 }

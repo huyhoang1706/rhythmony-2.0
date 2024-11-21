@@ -79,10 +79,11 @@ func StartServer(lc fx.Lifecycle, logger *zap.Logger) *gin.Engine {
 	return r
 }
 
-func ProvideGrpcServer(genreAPIServer pb.GenreAPIServer) *grpc.Server {
+func ProvideGrpcServer(genreAPIServer pb.GenreAPIServer, artistAPIServer pb.ArtistAPIServer) *grpc.Server {
 	server := grpc.NewServer()
 	_ = reflection.GRPCServer(server)
 	pb.RegisterGenreAPIServer(server, genreAPIServer)
+	pb.RegisterArtistAPIServer(server, artistAPIServer)
 	return server
 }
 

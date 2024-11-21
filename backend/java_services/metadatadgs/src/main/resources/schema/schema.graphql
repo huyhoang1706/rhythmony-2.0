@@ -1,6 +1,6 @@
 type Query {
     genres: [Genre!]!
-    artists: [Artist!]!
+    artists(pageSize: Int!, pageNo: Int!): [Artist!]!
     artist(id: String!): Artist
 }
 
@@ -19,7 +19,7 @@ type Artist {
     type: String!
     popularity: Int
     image: String
-    genres: [Genre!]!
+    genres: [Genre!]
     albums: [Album!]
     tracks: [Track!]
 }

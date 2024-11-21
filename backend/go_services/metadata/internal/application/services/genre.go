@@ -22,7 +22,7 @@ func NewGenreService(genreRepo *store.GenreRepository, logger *zap.Logger) pb.Ge
 	}
 }
 
-func (s *GenreService) GetGenres(ctx context.Context, GenreRequest *pb.ListAllGenresRequest) (*pb.ListAllGenresResponse, error) {
+func (s *GenreService) ListAllGenres(ctx context.Context, GenreRequest *pb.ListAllGenresRequest) (*pb.ListAllGenresResponse, error) {
 	s.logger.Info("Getting all genres")
 	genres, err := s.genreRepo.FindAllGenres(ctx)
 	if err != nil {

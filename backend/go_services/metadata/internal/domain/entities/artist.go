@@ -18,7 +18,7 @@ type Artist struct {
 	Bio        string         `gorm:"column:bio;type:TEXT"`
 	Image      string         `gorm:"column:image"`
 	Type       vo.Type        `gorm:"column:type"`
-	Popularity int            `gorm:"column:popularity"`
+	Popularity int32          `gorm:"column:popularity"`
 	Genres     []*Genre       `gorm:"many2many:artist_genres"`
 	Albums     []*Album       `gorm:"many2many:album_artists"`
 	Tracks     []*Track       `gorm:"many2many:artist_tracks"`

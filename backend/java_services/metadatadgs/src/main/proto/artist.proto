@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package rhythmony.metadata;
+option go_package = "pb/";
+option java_package = "com.rhythmony.metadata.pb";
+option java_outer_classname = "ArtistAPIProto";
+option java_multiple_files = true;
+
+
+service ArtistAPI {
+  rpc GetArtistById(GetArtistRequest) returns (GetArtistResponse);
+  rpc ListSeveralArtists(ListSeveralArtistsRequest) returns (ListSeveralArtistsResp);
+}
+
+message Artist {
+  string id = 1;
+  string name = 2;
+  string bio = 3;
+  string image = 4;
+  string type = 5;
+  int32 popularity = 6;
+}
+
+message GetArtistRequest {
+  string id = 1;
+}
+
+message GetArtistResponse {
+  Artist artist = 1;
+}
+
+message ListSeveralArtistsRequest {
+  uint64 page_size = 1;
+  uint64 page_no = 2;
+}
+
+message ListSeveralArtistsResp {
+  repeated Artist artists = 1;
+}
+
+

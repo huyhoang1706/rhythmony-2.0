@@ -1,13 +1,13 @@
-package com.rhythmony.metadata;
+package com.rhythmony.metadatadgs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MetadataApplication {
+public class MetadataDgsApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MetadataApplication.class, args);
+		SpringApplication.run(MetadataDgsApplication.class, args);
 	}
 
 }
