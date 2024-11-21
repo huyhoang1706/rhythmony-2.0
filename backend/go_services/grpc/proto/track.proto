@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package rhythmony.metadata;
+option go_package = "pb/";
+option java_package = "com.rhythmony.metadata.pb";
+option java_outer_classname = "TrackAPIProto";
+option java_multiple_files = true;
+
+message Track {
+    string id = 1;
+    string title = 2;
+}

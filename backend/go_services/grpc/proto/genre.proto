@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package rhythmony.metadata;
+option go_package = "pb/";
+option java_package = "com.rhythmony.metadata.pb";
+option java_outer_classname = "GenreAPIProto";
+option java_multiple_files = true;
+
+service GenreAPI {
+    rpc ListAllGenres(ListAllGenresRequest) returns (ListAllGenresResponse) {}
+}
+  
+message Genre {
+    string name = 1;
+}
+
+message ListAllGenresRequest {
+}
+
+message ListAllGenresResponse {
+    repeated Genre genres = 1;
+}

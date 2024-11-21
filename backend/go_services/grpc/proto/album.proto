@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package rhythmony.metadata;
+option go_package = "pb/";
+option java_package = "com.rhythmony.metadata.pb";
+option java_outer_classname = "AlbumAPIProto";
+option java_multiple_files = true;
+
+import "google/protobuf/timestamp.proto";
+import "proto/genre.proto";
+import "proto/artist.proto";
+
+service AlbumAPI {
+    rpc GetAlbumById(GetAlbumRequest) returns (GetAlbumResponse);
+    rpc ListSeveralAlbums(ListSeveralAlbumsRequest) returns (ListSeveralAlbumsResponse);
+}
+
+message Album {
+    string id = 1;
+    string title = 2;
+    string album_type = 3;
+    int32 total_tracks = 4;
+    google.protobuf.Timestamp release_date = 5;
+    string type = 6;
+    string image = 7;
+    repeated Genre genres = 8;
+    string label = 9;
+    uint32 popularity = 10;
+    repeated Artist artists = 11;
+}
+
+message GetAlbumRequest {
+    string id = 1;
+}
+
+message GetAlbumResponse {
+    Album album = 1;
+}
+
+message ListSeveralAlbumsRequest {
+    uint64 page_size = 1;
+    uint64 page_no = 2;
+}
+
+message ListSeveralAlbumsResponse {
+    repeated Album albums = 1; 
+}
