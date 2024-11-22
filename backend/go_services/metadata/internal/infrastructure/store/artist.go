@@ -3,7 +3,6 @@ package store
 import (
 	"context"
 	"errors"
-	"fmt"
 	"math"
 
 	"go.uber.org/zap"
@@ -26,8 +25,9 @@ func NewArtistRepository(repo *Repository, logger *zap.Logger) repository.IArtis
 }
 
 func (r *ArtistRepository) Save(ctx context.Context, artist *entities.Artist) (*entities.Artist, error) {
-	r.logger.Info("Saving artist ...")
+	r.logger.Info("Saving artist", zap.Any("artist", artist))
 	if err := r.repo.db.WithContext(ctx).Create(artist).Error; err != nil {
+		r.logger.Error("Fail to save artist", zap.Error(err))
 		return nil, err
 	}
 	return artist, nil
@@ -39,17 +39,17 @@ func (r *ArtistRepository) FindByID(ctx context.Context, id string) (*entities.A
 	err := r.repo.db.WithContext(ctx).Where("id = ?", id).First(&artist).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		r.logger.Warn("Artist not found", zap.String("id", id))
-		return nil, fmt.Errorf("artist with ID %s not found: %w", id, err)
+		return nil, err
 	}
 	if err != nil {
 		r.logger.Error("Failed to find artist", zap.String("id", id), zap.Error(err))
-		return nil, fmt.Errorf("failed to find artist with ID %s: %w", id, err)
+		return nil, err
 	}
 	return &artist, nil
 }
 
 func (r *ArtistRepository) Update(ctx context.Context, artist *entities.Artist) (*entities.Artist, error) {
-	r.logger.Info("Update artist ...")
+	r.logger.Info("Update artist", zap.Any("artist", artist))
 	if err := r.repo.db.WithContext(ctx).Updates(artist).Error; err != nil {
 		r.logger.Error("Fail to update artist", zap.String("id", artist.ID))
 		return nil, err
@@ -67,7 +67,7 @@ func (r *ArtistRepository) Delete(ctx context.Context, id string) error {
 }
 
 func (r *ArtistRepository) FindAllByPagination(ctx context.Context, pageSize, pageNo int) (*vo.Page[*entities.Artist], error) {
-	r.logger.Info("Find by pagination", zap.Int("pageSize", pageSize), zap.Int("pageNo", pageNo))
+	r.logger.Info("Find artists by pagination", zap.Int("pageSize", pageSize), zap.Int("pageNo", pageNo))
 	var artists []*entities.Artist
 	var totalElements int64
 

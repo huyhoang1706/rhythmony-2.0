@@ -33,7 +33,7 @@ func main() {
 	}
 
 	app := fx.New(
-		fx.Provide(zap.NewProduction),
+		fx.Provide(ProvideLogger),
 		fx.Provide(ProvideGrpcServer),
 		infrastructure.Modules,
 		services.Modules,
@@ -44,6 +44,14 @@ func main() {
 		),
 	)
 	app.Run()
+}
+
+func ProvideLogger() (*zap.Logger, error) {
+	production := os.Getenv("IS_PRODUCTION")
+	if production == "true" {
+		return zap.NewProduction()
+	}
+	return zap.NewDevelopment()
 }
 
 func StartServer(lc fx.Lifecycle, logger *zap.Logger) *gin.Engine {

@@ -12,4 +12,5 @@ var Modules = fx.Options(
 	fx.Provide(store.NewRepository),
 	fx.Provide(store.NewArtistRepository),
 	fx.Provide(store.NewGenreRepository),
+	fx.Provide(store.NewTrackRepository),
 )
