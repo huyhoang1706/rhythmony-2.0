@@ -19,21 +19,27 @@ const (
 )
 
 type Album struct {
-	ID          string         `gorm:"primaryKey"`
-	CreatedAt   time.Time      `gorm:"column:created_at"`
-	UpdatedAt   time.Time      `gorm:"column:updated_at"`
-	DeletedAt   gorm.DeletedAt `gorm:"column:deleted_at;index"`
-	Title       string         `gorm:"column:title;not null;size:50"`
-	AlbumType   AlbumType      `gorm:"column:album_type;size:15"`
-	TotalTracks int            `gorm:"column:total_tracks"`
-	ReleaseDate time.Time      `gorm:"column:release_date;not null"`
-	Type        vo.Type        `gorm:"column:type;size:10"`
-	Image       string         `gorm:"column:image"`
-	Genres      []*Genre       `gorm:"many2many:album_genres"`
-	Label       string         `gorm:"column:label"`
-	Popularity  int            `gorm:"column:popularity"`
-	Artists     []*Artist      `gorm:"many2many:album_artists"`
-	Tracks      []*Track       `gorm:"many2many:album_tracks"`
+	ID          string         `gorm:"primaryKey" db:"id"`
+	CreatedAt   time.Time      `gorm:"column:created_at" db:"created_at"`
+	UpdatedAt   time.Time      `gorm:"column:updated_at" db:"updated_at"`
+	DeletedAt   gorm.DeletedAt `gorm:"column:deleted_at;index" db:"deleted_at"`
+	Title       string         `gorm:"column:title;not null;size:60" db:"title"`
+	AlbumType   AlbumType      `gorm:"column:album_type;size:15" db:"album_type"`
+	TotalTracks int32          `gorm:"column:total_tracks" db:"total_tracks"`
+	ReleaseDate time.Time      `gorm:"column:release_date;not null" db:"release_date"`
+	Type        vo.Type        `gorm:"-" db:"-"`
+	Image       string         `gorm:"column:image" db:"image"`
+	Label       string         `gorm:"column:label" db:"label"`
+	Popularity  int32          `gorm:"column:popularity" db:"popularity"`
+	Genres      []*Genre       `gorm:"many2many:album_genres" db:"-"`
+	Artists     []*Artist      `gorm:"many2many:album_artists" db:"-"`
+	Tracks      []*Track       `gorm:"many2many:album_tracks" db:"-"`
+}
+
+type AlbumTrack struct {
+	AlbumID    string `gorm:"primaryKey" db:"album_id"`
+	TrackID    string `gorm:"primaryKey" db:"track_id"`
+	DiscNumber int32  `gorm:"column:disc_number" db:"disc_number"`
 }
 
 func NewAlbum(title string, albumType AlbumType, releaseDate time.Time, artists []*Artist, image string, label string) *Album {

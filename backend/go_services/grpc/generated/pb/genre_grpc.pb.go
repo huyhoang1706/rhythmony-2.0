@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             v5.27.2
-// source: proto/genre.proto
+// source: genre.proto
 
 package pb
 
@@ -117,5 +117,5 @@ var GenreAPI_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "proto/genre.proto",
+	Metadata: "genre.proto",
 }

@@ -6,7 +6,68 @@ option java_package = "com.rhythmony.metadata.pb";
 option java_outer_classname = "TrackAPIProto";
 option java_multiple_files = true;
 
-message Track {
+import "type.proto";
+
+service TrackAPI {
+    rpc GetTrackById(GetTrackByIdRequest) returns (GetTrackByIdResponse);
+    rpc ListSeveralTracks(ListSeveralTracksRequest) returns (ListSeveralTracksResponse);
+    rpc CreateTrack(CreateTrackRequest) returns (CreateTrackResponse);
+    rpc UpdateTrack(UpdateTrackRequest) returns (UpdateTrackResponse);
+    rpc DeleteTrack(DeleteTrackRequest) returns (DeleteTrackResponse);
+}
+
+message GetTrackByIdRequest {
+    string id = 1;
+}
+
+message GetTrackByIdResponse {
+    Track track = 1;
+}
+
+message ListSeveralTracksRequest {
+    uint64 page_size = 1;
+    uint64 page_no = 2;
+}
+
+message ListSeveralTracksResponse {
+    uint64 page_size = 1;
+    uint64 page_no = 2;
+    uint64 total_pages = 3;
+    uint64 total_elements = 4;
+    repeated Track tracks = 5;
+}
+
+message CreateTrackRequest {
+    string title = 1;
+    optional bool explicit = 2;
+    optional string lyrics = 3;
+    int32 disc_number = 4;
+}
+
+message CreateTrackResponse {
+    Track track = 1;
+    string message = 2;
+}
+
+message UpdateTrackRequest {
     string id = 1;
     string title = 2;
+    bool explicit = 3;
+    string lyrics = 4;
+    int32 disc_number = 5;
+    repeated Artist artists = 6;
+    repeated Album albums = 7;
+}
+
+message UpdateTrackResponse {
+    Track track = 1;
+    string message = 2;
+}
+
+message DeleteTrackRequest {
+    string id = 1;
+}
+
+message DeleteTrackResponse {
+    string message = 1;
 }

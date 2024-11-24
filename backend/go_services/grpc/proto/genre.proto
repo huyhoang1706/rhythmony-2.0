@@ -6,12 +6,10 @@ option java_package = "com.rhythmony.metadata.pb";
 option java_outer_classname = "GenreAPIProto";
 option java_multiple_files = true;
 
+import "type.proto";
+
 service GenreAPI {
     rpc ListAllGenres(ListAllGenresRequest) returns (ListAllGenresResponse) {}
-}
-  
-message Genre {
-    string name = 1;
 }
 
 message ListAllGenresRequest {

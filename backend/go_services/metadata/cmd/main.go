@@ -10,7 +10,6 @@ import (
 	"rhythmony.com/grpc/generated/pb"
 
 	"rhythmony.com/metadata/internal/application/services"
-	"rhythmony.com/metadata/internal/domain/entities"
 	"rhythmony.com/metadata/internal/infrastructure"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +17,6 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	"gorm.io/gorm"
 )
 
 const (
@@ -40,7 +38,6 @@ func main() {
 		fx.Invoke(
 			StartServer,
 			StartGRPCServer,
-			//api.MigrationSchema,
 		),
 	)
 	app.Run()
@@ -124,19 +121,4 @@ func StartGRPCServer(lc fx.Lifecycle, server *grpc.Server, logger *zap.Logger) *
 		},
 	})
 	return server
-}
-
-func MigrationSchema(lc fx.Lifecycle, db *gorm.DB) {
-	lc.Append(fx.Hook{
-		OnStart: func(ctx context.Context) error {
-			if err := db.AutoMigrate(
-				&entities.Artist{},
-				&entities.Album{},
-				&entities.Genre{},
-				&entities.Track{}); err != nil {
-				return err
-			}
-			return nil
-		},
-	})
 }

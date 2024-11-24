@@ -10,26 +10,29 @@ import (
 )
 
 type Track struct {
-	ID         string         `gorm:"primaryKey"`
-	CreatedAt  time.Time      `gorm:"column:created_at"`
-	UpdatedAt  time.Time      `gorm:"column:updated_at"`
-	DeletedAt  gorm.DeletedAt `gorm:"index"`
-	Title      string         `gorm:"column:title;not null;size:60"`
-	DiscNumber int            `gorm:"column:disc_number;not null"`
-	DurationMs *int           `gorm:"column:duration_ms"`
-	Explicit   *bool          `gorm:"column:explicit"`
-	Type       vo.Type        `gorm:"column:type"`
-	Lyrics     string         `gorm:"column:lyrics;type:TEXT"`
-	Popularity int            `gorm:"column:popularity"`
-	Albums     []*Album       `gorm:"many2many:album_tracks"`
-	Artists    []*Artist      `gorm:"many2many:artist_tracks"`
+	ID         string         `gorm:"primaryKey" db:"id"`
+	CreatedAt  time.Time      `gorm:"column:created_at" db:"created_at"`
+	UpdatedAt  time.Time      `gorm:"column:updated_at" db:"updated_at"`
+	DeletedAt  gorm.DeletedAt `gorm:"column:deleted_at;index" db:"deleted_at"`
+	AudioURL   string         `gorm:"column:audio_url" db:"audio_url"`
+	Title      string         `gorm:"column:title;not null;size:60" db:"title"`
+	DurationMs *int32         `gorm:"column:duration_ms" db:"duration_ms"`
+	Explicit   *bool          `gorm:"column:explicit" db:"explicit"`
+	Type       vo.Type        `gorm:"-" db:"-"`
+	Lyrics     string         `gorm:"column:lyrics;type:TEXT" db:"lyrics"`
+	Popularity int32          `gorm:"column:popularity" db:"popularity"`
+	Genres     []*Genre       `gorm:"many2many:track_genres" db:"-"`
+	Albums     []*Album       `gorm:"many2many:album_tracks" db:"-"`
+	Artists    []*Artist      `gorm:"many2many:artist_tracks" db:"-"`
 }
 
-func NewTrack(title string, artists []*Artist) *Track {
+func NewTrack(title string, explicit *bool, lyrics string, artists []*Artist) *Track {
 	return &Track{
-		ID:      ulid.Make().String(),
-		Title:   title,
-		Artists: artists,
-		Type:    vo.TRACK,
+		ID:       ulid.Make().String(),
+		Title:    title,
+		Artists:  artists,
+		Explicit: explicit,
+		Lyrics:   lyrics,
+		Type:     vo.TRACK,
 	}
 }
