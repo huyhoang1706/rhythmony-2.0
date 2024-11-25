@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import { Poppins } from 'next/font/google'
 import './globals.css'
+import { ApolloProvider } from '@apollo/client'
+import client from '@/lib/apollo-client'
+import Providers from './providers'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -21,7 +24,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${poppins.className} antialiased`}>{children}</body>
+      <body className={`${poppins.className} antialiased`}>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   )
 }

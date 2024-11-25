@@ -28,7 +28,13 @@ export default function NavLink({ href, name, className, icon, collapsed, small 
     >
       {icon}
       {!collapsed && (
-        <span className={cn(small ? 'text-sm' : 'text-lg', pathName === href ? 'text-white' : '')}>
+        <span
+          className={cn(
+            'truncate',
+            small ? 'text-sm' : 'text-lg',
+            pathName === href ? 'text-white' : '',
+          )}
+        >
           {name}
         </span>
       )}

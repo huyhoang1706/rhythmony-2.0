@@ -1,28 +1,26 @@
-import Header from '@/components/header'
-import LeftSideBar from '@/components/left-sidebar'
-import MusicPlayer from '@/components/music-player'
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
+import Header from "@/components/header";
+import MusicPlayer from "@/components/music-player";
+import ResizeLayout from "@/components/resize-layout";
+import { cookies } from "next/headers";
 
-export default function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function MainLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const layout = (await cookies()).get("react-resizable-panels:layout");
+
+  let defaultLayout;
+  if (layout) {
+    defaultLayout = JSON.parse(layout.value);
+  }
+
   return (
     <div className="flex h-screen min-w-[600px] flex-col">
       <Header />
-      <div className="flex-1 bg-neutral-900 p-2">
-        <ResizablePanelGroup direction="horizontal">
-          <ResizablePanel defaultSize={20} maxSize={25} minSize={8}>
-            <LeftSideBar />
-          </ResizablePanel>
-          <ResizableHandle className="opacity-0" />
-          <ResizablePanel>
-            <main className="h-full w-full px-2">{children}</main>
-          </ResizablePanel>
-          <ResizableHandle className="opacity-0" />
-          <ResizablePanel defaultSize={15} maxSize={25}>
-            RightSize
-          </ResizablePanel>
-        </ResizablePanelGroup>
+      <div className="h-[calc(100vh-56px)] bg-neutral-900 p-2">
+        <div className="mb-2 h-[calc(100%-80px)]">
+          <ResizeLayout defaultLayout={defaultLayout}>{children}</ResizeLayout>
+        </div>
+
+        <MusicPlayer />
       </div>
-      <MusicPlayer />
     </div>
-  )
+  );
 }

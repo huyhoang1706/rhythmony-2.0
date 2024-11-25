@@ -16,6 +16,7 @@
     "@primevue/themes": "^4.2.1",
     "@tanstack/vue-form": "^0.34.4",
     "@tanstack/zod-form-adapter": "^0.34.4",
+    "axios": "^1.7.7",
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^2.2.6",
     "primevue": "^4.2.1",

@@ -21,6 +21,7 @@ type Track struct {
 	Type       vo.Type        `gorm:"-" db:"-"`
 	Lyrics     string         `gorm:"column:lyrics;type:TEXT" db:"lyrics"`
 	Popularity int32          `gorm:"column:popularity" db:"popularity"`
+	IsFeatured bool           `gorm:"column:is_featured" db:"is_featured"`
 	Genres     []*Genre       `gorm:"many2many:track_genres" db:"-"`
 	Albums     []*Album       `gorm:"many2many:album_tracks" db:"-"`
 	Artists    []*Artist      `gorm:"many2many:artist_tracks" db:"-"`
@@ -28,11 +29,12 @@ type Track struct {
 
 func NewTrack(title string, explicit *bool, lyrics string, artists []*Artist) *Track {
 	return &Track{
-		ID:       ulid.Make().String(),
-		Title:    title,
-		Artists:  artists,
-		Explicit: explicit,
-		Lyrics:   lyrics,
-		Type:     vo.TRACK,
+		ID:         ulid.Make().String(),
+		Title:      title,
+		Artists:    artists,
+		Explicit:   explicit,
+		Lyrics:     lyrics,
+		Type:       vo.TRACK,
+		IsFeatured: false,
 	}
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import useTransport from '@/store/useTransport'
+import useTransport from '@/store/transport-store'
 import {
   CirclePlay,
   CirclePause,
@@ -17,7 +17,7 @@ import { Slider } from './ui/slider'
 export default function MusicPlayer() {
   const { isPlaying, isShuffle, repeat, togglePlay, toggleShuffle, handleRepeat } = useTransport()
   return (
-    <footer className="h-[80px] bg-neutral-900 px-2">
+    <footer className="h-[80px]">
       <div className="flex h-full w-full items-center justify-between rounded-lg bg-gradient-to-b from-white/10 px-5">
         <div>Home</div>
         <div className="flex w-auto flex-col items-center justify-center gap-3">
