@@ -1,5 +1,5 @@
 <template>
-  <header class="sticky top-0 left-0 border-b border-neutral-700 bg-neutral-900 z-30">
+  <header class="sticky top-0 left-0 border-b border-neutral-700 z-30">
     <div class="p-4 flex justify-between items-center">
       <div class="flex items-center">
         <button @click="context.toggleMobileMenu" class="md:hidden">

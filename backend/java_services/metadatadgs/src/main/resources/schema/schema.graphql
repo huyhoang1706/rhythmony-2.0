@@ -1,11 +1,15 @@
 type Query {
     genres: [Genre!]!
-    artists(pageSize: Int!, pageNo: Int!): [Artist!]!
+    artists(pageSize: Int, pageNo: Int): [Artist]
     artist(id: String!): Artist
+    albums(pageSize: Int, pageNo: Int): [Album]
+    album(id: String!): Album
 }
 
 type Mutation {
-    createArtist(artist: ArtistInput): Artist!
+    createArtist(artist: ArtistInput): Artist
+    updateArtist(id: String!, artist: ArtistInput): Artist
+    deleteArtist(id: String!): String
 }
 
 type Genre {

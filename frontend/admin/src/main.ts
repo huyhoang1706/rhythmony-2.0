@@ -14,28 +14,41 @@ import {
   BiPersonFill,
   MdAlbum,
   HiMenu,
+  RiEditBoxLine,
+  MdDeleteRound,
 } from 'oh-vue-icons/icons'
 
 import App from './App.vue'
 import router from './router'
 import { definePreset } from '@primevue/themes'
 
-addIcons(FaSpotify, CoHome, MdDashboardSharp, BiList, MdUploadfile, BiPersonFill, MdAlbum, HiMenu)
+addIcons(
+  FaSpotify,
+  CoHome,
+  MdDashboardSharp,
+  BiList,
+  MdUploadfile,
+  BiPersonFill,
+  MdAlbum,
+  HiMenu,
+  RiEditBoxLine,
+  MdDeleteRound,
+)
 
 const MyPreset = definePreset(Aura, {
   semantic: {
     primary: {
-      50: '{sky.50}',
-      100: '{sky.100}',
-      200: '{sky.200}',
-      300: '{sky.300}',
-      400: '{sky.400}',
-      500: '{sky.500}',
-      600: '{sky.600}',
-      700: '{sky.700}',
-      800: '{sky.800}',
-      900: '{sky.900}',
-      950: '{sky.950}',
+      50: '{rose.50}',
+      100: '{rose.100}',
+      200: '{rose.200}',
+      300: '{rose.300}',
+      400: '{rose.400}',
+      500: '{rose.500}',
+      600: '{rose.600}',
+      700: '{rose.700}',
+      800: '{rose.800}',
+      900: '{rose.900}',
+      950: '{rose.950}',
     },
   },
 })

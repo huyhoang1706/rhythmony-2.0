@@ -7,26 +7,14 @@ option java_outer_classname = "AlbumAPIProto";
 option java_multiple_files = true;
 
 import "google/protobuf/timestamp.proto";
-import "proto/genre.proto";
-import "proto/artist.proto";
+import "type.proto";
 
 service AlbumAPI {
     rpc GetAlbumById(GetAlbumRequest) returns (GetAlbumResponse);
     rpc ListSeveralAlbums(ListSeveralAlbumsRequest) returns (ListSeveralAlbumsResponse);
-}
-
-message Album {
-    string id = 1;
-    string title = 2;
-    string album_type = 3;
-    int32 total_tracks = 4;
-    google.protobuf.Timestamp release_date = 5;
-    string type = 6;
-    string image = 7;
-    repeated Genre genres = 8;
-    string label = 9;
-    uint32 popularity = 10;
-    repeated Artist artists = 11;
+    rpc CreateAlbum(CreateAlbumRequest) returns (CreateAlbumResponse);
+    rpc UpdateAlbum(UpdateAlbumRequest) returns (UpdateAlbumResponse);
+    rpc DeleteAlbum(DeleteAlbumRequest) returns (DeleteAlbumResponse);
 }
 
 message GetAlbumRequest {
@@ -43,5 +31,42 @@ message ListSeveralAlbumsRequest {
 }
 
 message ListSeveralAlbumsResponse {
-    repeated Album albums = 1; 
+    uint64 page_size = 1;
+    uint64 page_no = 2;
+    uint64 total_pages = 3;
+    uint64 total_elements = 4;
+    repeated Album albums = 5;
+}
+
+message CreateAlbumRequest {
+    string title = 1;
+    string album_type = 2;
+    google.protobuf.Timestamp release_date = 3;
+    repeated string artist_id = 4;
+}
+
+message CreateAlbumResponse {
+    Album album = 1;
+    string message = 2;
+}
+
+message UpdateAlbumRequest {
+    string id = 1;
+    string title = 2;
+    string album_type = 3;
+    google.protobuf.Timestamp release_date = 4;
+    repeated string artist_id = 5;
+}
+
+message UpdateAlbumResponse {
+    Album album = 1;
+    string message = 2;
+}
+
+message DeleteAlbumRequest {
+    string id = 1;
+}
+
+message DeleteAlbumResponse {
+    string message = 1;
 }

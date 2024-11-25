@@ -10,7 +10,6 @@ import (
 	"rhythmony.com/grpc/generated/pb"
 
 	"rhythmony.com/metadata/internal/application/services"
-	"rhythmony.com/metadata/internal/domain/entities"
 	"rhythmony.com/metadata/internal/infrastructure"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +17,6 @@ import (
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
-	"gorm.io/gorm"
 )
 
 const (
@@ -33,17 +31,24 @@ func main() {
 	}
 
 	app := fx.New(
-		fx.Provide(zap.NewProduction),
+		fx.Provide(ProvideLogger),
 		fx.Provide(ProvideGrpcServer),
 		infrastructure.Modules,
 		services.Modules,
 		fx.Invoke(
 			StartServer,
 			StartGRPCServer,
-			//api.MigrationSchema,
 		),
 	)
 	app.Run()
+}
+
+func ProvideLogger() (*zap.Logger, error) {
+	production := os.Getenv("IS_PRODUCTION")
+	if production == "true" {
+		return zap.NewProduction()
+	}
+	return zap.NewDevelopment()
 }
 
 func StartServer(lc fx.Lifecycle, logger *zap.Logger) *gin.Engine {
@@ -116,19 +121,4 @@ func StartGRPCServer(lc fx.Lifecycle, server *grpc.Server, logger *zap.Logger) *
 		},
 	})
 	return server
-}
-
-func MigrationSchema(lc fx.Lifecycle, db *gorm.DB) {
-	lc.Append(fx.Hook{
-		OnStart: func(ctx context.Context) error {
-			if err := db.AutoMigrate(
-				&entities.Artist{},
-				&entities.Album{},
-				&entities.Genre{},
-				&entities.Track{}); err != nil {
-				return err
-			}
-			return nil
-		},
-	})
 }

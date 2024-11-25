@@ -1,8 +1,8 @@
 build:
-	go build cmd/main.go
+	@go build cmd/main.go
 
 run:
-	go run cmd/main.go
+	@go run cmd/main.go
 
 watch:
-	air
+	@air

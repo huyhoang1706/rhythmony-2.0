@@ -2,8 +2,10 @@ package services
 
 import (
 	"context"
+
 	"go.uber.org/zap"
 	"rhythmony.com/grpc/generated/pb"
+	"rhythmony.com/metadata/internal/application/mapper"
 	"rhythmony.com/metadata/internal/domain/entities"
 	"rhythmony.com/metadata/internal/domain/repository"
 )
@@ -30,32 +32,63 @@ func (s *ArtistService) GetArtistById(ctx context.Context, request *pb.GetArtist
 	}
 
 	return &pb.GetArtistResponse{
-		Artist: mapToArtistPb(artist),
+		Artist: mapper.MapToArtistPb(artist),
 	}, nil
 }
 
 func (s *ArtistService) ListSeveralArtists(ctx context.Context, request *pb.ListSeveralArtistsRequest) (*pb.ListSeveralArtistsResp, error) {
 	s.logger.Info("Get several artists", zap.Uint64("pageSize", request.GetPageSize()), zap.Uint64("pageNo", request.GetPageNo()))
 
-	artists, err := s.artistRepository.FindAllByPagination(ctx, int(request.GetPageSize()), int(request.GetPageNo()))
+	artistPage, err := s.artistRepository.FindAllByPagination(ctx, int(request.GetPageSize()), int(request.GetPageNo()))
 	if err != nil {
 		return nil, err
 	}
 	var res []*pb.Artist
-	for _, e := range artists.Content {
-		artistPb := mapToArtistPb(e)
+	for _, e := range artistPage.Content {
+		artistPb := mapper.MapToArtistPb(e)
 		res = append(res, artistPb)
 	}
 	return &pb.ListSeveralArtistsResp{Artists: res}, nil
 }
 
-func mapToArtistPb(artist *entities.Artist) *pb.Artist {
-	return &pb.Artist{
-		Id:         artist.ID,
-		Name:       artist.Name,
-		Bio:        artist.Bio,
-		Type:       string(artist.Type),
-		Image:      artist.Image,
-		Popularity: artist.Popularity,
+func (s *ArtistService) CreateArtist(ctx context.Context, request *pb.CreateArtistRequest) (*pb.CreateArtistResponse, error) {
+	s.logger.Info("Create artist", zap.String("name", request.GetName()), zap.String("bio", request.GetBio()))
+
+	artist := entities.NewArtist(request.GetName(), request.GetBio())
+
+	artist, err := s.artistRepository.Save(ctx, artist)
+	if err != nil {
+		return nil, err
 	}
+	return &pb.CreateArtistResponse{
+		Artist:  mapper.MapToArtistPb(artist),
+		Message: "Create artist successfully",
+	}, nil
+}
+func (s *ArtistService) UpdateArtist(ctx context.Context, request *pb.UpdateArtistRequest) (*pb.UpdateArtistResponse, error) {
+	s.logger.Info("Update artist", zap.String("id", request.GetId()),
+		zap.String("name", request.GetName()),
+		zap.String("bio", request.GetBio()))
+	artist, err := s.artistRepository.FindByID(ctx, request.GetId())
+	if err != nil {
+		s.logger.Error("Cannot find artist by id", zap.String("id", request.GetId()))
+		return &pb.UpdateArtistResponse{Message: "Fail to update artist"}, err
+	}
+
+	artist, err = s.artistRepository.Update(ctx, artist)
+	if err != nil {
+		return &pb.UpdateArtistResponse{Message: "Fail to update artist"}, err
+	}
+	return &pb.UpdateArtistResponse{
+		Artist:  mapper.MapToArtistPb(artist),
+		Message: "Update artist successfully",
+	}, nil
+}
+func (s *ArtistService) DeleteArtist(ctx context.Context, request *pb.DeleteArtistRequest) (*pb.DeleteArtistResponse, error) {
+	s.logger.Info("Delete artist", zap.String("id", request.Id))
+
+	if err := s.artistRepository.Delete(ctx, request.GetId()); err != nil {
+		return &pb.DeleteArtistResponse{Message: "Fail to delete artist"}, err
+	}
+	return &pb.DeleteArtistResponse{Message: "Delete artist successfully"}, nil
 }

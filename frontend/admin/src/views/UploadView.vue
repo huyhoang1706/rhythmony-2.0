@@ -66,7 +66,7 @@
                       accept="image/jpg, image/jpeg, image/png"
                     />
                     <div
-                      class="flex w-28 h-9 px-2 flex-col bg-sky-500 rounded-full shadow text-white text-xs font-semibold leading-4 items-center justify-center cursor-pointer focus:outline-none"
+                      class="flex w-28 h-9 px-2 flex-col bg-rose-500 rounded-full shadow text-white text-xs font-semibold leading-4 items-center justify-center cursor-pointer focus:outline-none"
                     >
                       Choose File
                     </div>
