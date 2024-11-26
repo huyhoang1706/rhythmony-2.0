@@ -4,6 +4,10 @@ type Query {
     artist(id: String!): Artist
     albums(pageSize: Int, pageNo: Int): [Album]
     album(id: String!): Album
+    tracks(pageSize: Int, pageNo: Int): [Track]
+    track(id: String): Track
+    getTracksByArtistId(artistId: String): [Track]
+    getAlbumsByArtistId(artistId: String): [Album]
 }
 
 type Mutation {
@@ -20,40 +24,65 @@ type Artist {
     id: String!
     name: String!
     bio: String
-    type: String!
+    type: String
     popularity: Int
     image: String
-    genres: [Genre!]
-    albums: [Album!]
-    tracks: [Track!]
+    genres: [String]
 }
 
 type Album {
     id: String!
     title: String!
-    albumType: String!
-    type: String!
+    albumType: String
+    type: String
     totalTracks: Int
     releaseDate: String
     image: String
     label: String
     popularity: Int
-    genres: [Genre!]!
-    artists: [Artist!]
-    tracks: [Track!]
+    genres: [String]
+    artists: [SimplifiedArtist!]
+    tracks: [SimplifiedTrack!]
 }
 
 type Track {
     id: String!
     title: String!
-    discNumber: Int!
     durationMs: Int
     explicit: Boolean
     type: String!
     lyrics: String
     popularity: Int
-    artists: [Artist!]!
-    albums: [Album!]!
+    audioUrl: String
+    genres: [String]
+    artists: [SimplifiedArtist!]!
+    albums: [SimplifiedAlbum!]!
+}
+
+type SimplifiedArtist {
+    id: String!
+    name: String!
+}
+
+type SimplifiedAlbum {
+    id: String!
+    title: String!
+    albumType: String
+    totalTracks: Int
+    releaseDate: String
+    image: String
+    label: String
+}
+
+type SimplifiedTrack {
+    id: String!
+    title: String!
+    durationMs: Int
+    explicit: Boolean
+    lyrics: String
+    popularity: Int
+    audioUrl: String
+    genres: [String]
 }
 
 input ArtistInput {

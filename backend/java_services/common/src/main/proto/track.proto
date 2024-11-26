@@ -41,7 +41,7 @@ message CreateTrackRequest {
   string title = 1;
   optional bool explicit = 2;
   optional string lyrics = 3;
-  int32 disc_number = 4;
+  repeated string artist_id = 4;
 }
 
 message CreateTrackResponse {
@@ -54,9 +54,7 @@ message UpdateTrackRequest {
   string title = 2;
   bool explicit = 3;
   string lyrics = 4;
-  int32 disc_number = 5;
-  repeated Artist artists = 6;
-  repeated Album albums = 7;
+  repeated string artist_id = 5;
 }
 
 message UpdateTrackResponse {

@@ -38,7 +38,7 @@ func (r *ArtistRepository) Save(ctx context.Context, artist *entities.Artist) (*
 func (r *ArtistRepository) FindByID(ctx context.Context, id string) (*entities.Artist, error) {
 	r.logger.Info("Find artist by id", zap.String("id", id))
 	var artist entities.Artist
-	err := r.db.WithContext(ctx).Where("id = ?", id).First(&artist).Error
+	err := r.db.WithContext(ctx).Preload("Genres").Where("id = ?", id).First(&artist).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		r.logger.Warn("Artist not found", zap.String("id", id))
 		return nil, err
@@ -77,7 +77,7 @@ func (r *ArtistRepository) FindAllByPagination(ctx context.Context, pageSize, pa
 
 	totalPages := int(math.Ceil(float64(totalElements) / float64(pageSize)))
 
-	if err := r.db.WithContext(ctx).Offset((pageNo - 1) * pageSize).Limit(pageSize).Find(&artists).Error; err != nil {
+	if err := r.db.WithContext(ctx).Preload("Genres").Offset((pageNo - 1) * pageSize).Limit(pageSize).Find(&artists).Error; err != nil {
 		r.logger.Error("Fail to find artists by pagination")
 		return nil, err
 	}

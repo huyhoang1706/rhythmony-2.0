@@ -62,7 +62,6 @@ func (s *TrackService) ListSeveralTracks(ctx context.Context, request *pb.ListSe
 func (s *TrackService) CreateTrack(ctx context.Context, request *pb.CreateTrackRequest) (*pb.CreateTrackResponse, error) {
 	s.logger.Info("Create track",
 		zap.String("title", request.GetTitle()),
-		zap.Int32("disc_number", request.GetDiscNumber()),
 		zap.Bool("explicit", request.GetExplicit()),
 		zap.String("lyrics", request.GetLyrics()),
 	)

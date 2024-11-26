@@ -20,6 +20,10 @@ func MapToArtistPb(artist *entities.Artist) *pb.Artist {
 	if artist == nil {
 		return nil
 	}
+	var genres []string
+	for _, genre := range artist.Genres {
+		genres = append(genres, genre.GetGenreName())
+	}
 	return &pb.Artist{
 		Id:         artist.ID,
 		Name:       artist.Name,
@@ -27,6 +31,7 @@ func MapToArtistPb(artist *entities.Artist) *pb.Artist {
 		Type:       string(vo.ARTIST),
 		Image:      artist.Image,
 		Popularity: artist.Popularity,
+		Genres:     genres,
 	}
 }
 
