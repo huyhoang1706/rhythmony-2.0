@@ -37,7 +37,13 @@ func (r *TrackRepository) Save(ctx context.Context, track *entities.Track) (*ent
 func (r *TrackRepository) FindByID(ctx context.Context, id string) (*entities.Track, error) {
 	r.logger.Info("Find album by id", zap.String("id", id))
 	var track entities.Track
-	err := r.db.WithContext(ctx).Where("id = ?", id).First(&track).Error
+	tx := r.db.WithContext(ctx)
+
+	err := tx.Preload("Artists").Preload("Genres").
+		Preload("Albums", func(tx *gorm.DB) *gorm.DB {
+			return tx.Order("release_date DESC")
+		}).
+		Where("id = ?", id).First(&track).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		r.logger.Warn("Track not found", zap.String("id", id))
 		return nil, err
@@ -68,18 +74,25 @@ func (r *TrackRepository) Delete(ctx context.Context, id string) error {
 }
 
 func (r *TrackRepository) FindAllByPagination(ctx context.Context, pageSize, pageNo int) (*vo.Page[*entities.Track], error) {
-	r.logger.Info("Find albums by pagination", zap.Int("pageSize", pageSize), zap.Int("pageNo", pageNo))
+	r.logger.Info("Find tracks by pagination", zap.Int("pageSize", pageSize), zap.Int("pageNo", pageNo))
 	var tracks []*entities.Track
 	var totalElements int64
 
-	r.db.WithContext(ctx).Model(&entities.Album{}).Select("id").Count(&totalElements)
+	tx := r.db.WithContext(ctx)
+	tx.Model(&entities.Track{}).Select("id").Count(&totalElements)
 
 	totalPages := int(math.Ceil(float64(totalElements) / float64(pageSize)))
 
-	if err := r.db.WithContext(ctx).Offset((pageNo - 1) * pageSize).Limit(pageSize).Find(&tracks).Error; err != nil {
-		r.logger.Error("Fail to find albums by pagination")
+	err := tx.Preload("Artists").Preload("Genres").
+		Preload("Albums", func(tx *gorm.DB) *gorm.DB {
+			return tx.Order("release_date DESC")
+		}).
+		Limit(pageSize).Offset((pageNo - 1) * pageSize).Find(&tracks).Error
+
+	if err != nil {
 		return nil, err
 	}
+
 	page := vo.Page[*entities.Track]{
 		PageSize:      pageSize,
 		PageNo:        pageNo,
@@ -88,4 +101,18 @@ func (r *TrackRepository) FindAllByPagination(ctx context.Context, pageSize, pag
 		Content:       tracks,
 	}
 	return &page, nil
+}
+
+func (r *TrackRepository) FindTracksByAlbumId(ctx context.Context, albumId string) ([]*entities.Track, error) {
+	var tracks []*entities.Track
+	tx := r.db.WithContext(ctx)
+
+	err := tx.Preload("Genres").Preload("Artists").Joins("JOIN album_tracks ON album_tracks.track_id = tracks.id").
+		Where("album_tracks.album_id = ?", albumId).Order("track_order ASC").
+		Find(&tracks).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return tracks, nil
 }

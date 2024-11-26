@@ -6,6 +6,7 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"rhythmony.com/grpc/generated/pb"
 	"rhythmony.com/metadata/internal/domain/entities"
+	"rhythmony.com/metadata/internal/domain/vo"
 )
 
 func MapToGenrePb(genre *entities.Genre) *pb.Genre {
@@ -23,7 +24,7 @@ func MapToArtistPb(artist *entities.Artist) *pb.Artist {
 		Id:         artist.ID,
 		Name:       artist.Name,
 		Bio:        artist.Bio,
-		Type:       string(artist.Type),
+		Type:       string(vo.ARTIST),
 		Image:      artist.Image,
 		Popularity: artist.Popularity,
 	}
@@ -33,17 +34,26 @@ func MapToTrackPb(track *entities.Track) *pb.Track {
 	if track == nil {
 		return nil
 	}
-	artists := mapArtistsConcurrently(track.Artists)
-	albums := mapAlbumsConcurrently(track.Albums)
+	artists := mapSimplifiedArtistConcurrently(track.Artists)
+	albums := mapSimplifiedAlbumsConcurrently(track.Albums)
+
+	var genres []string
+	for _, genre := range track.Genres {
+		genres = append(genres, genre.GetGenreName())
+	}
+
 	return &pb.Track{
 		Id:         track.ID,
 		Title:      track.Title,
-		DurationMs: int32(*track.DurationMs),
+		DurationMs: track.DurationMs,
 		Explicit:   track.Explicit,
-		Type:       track.Title,
+		Type:       string(vo.TRACK),
 		Popularity: int32(track.Popularity),
+		Lyrics:     track.Lyrics,
+		AudioUrl:   track.AudioURL,
 		Artists:    artists,
 		Albums:     albums,
+		Genres:     genres,
 	}
 }
 
@@ -51,22 +61,90 @@ func MapToAlbumPb(album *entities.Album) *pb.Album {
 	if album == nil {
 		return nil
 	}
-	artists := mapArtistsConcurrently(album.Artists)
-	genres := mapGenresConcurrently(album.Genres)
-	tracks := mapTracksConcurrently(album.Tracks)
+	artists := mapSimplifiedArtistConcurrently(album.Artists)
+	tracks := mapSimplifiedTracksConcurrently(album.Tracks)
+
+	var genres []string
+	for _, genre := range album.Genres {
+		genres = append(genres, genre.GetGenreName())
+	}
+
 	return &pb.Album{
 		Id:          album.ID,
 		Title:       album.Title,
 		AlbumType:   string(album.AlbumType),
 		TotalTracks: int32(album.TotalTracks),
 		ReleaseDate: timestamppb.New(album.ReleaseDate),
-		Type:        string(album.Type),
+		Type:        string(vo.ALBUM),
 		Image:       album.Image,
 		Popularity:  uint32(album.Popularity),
 		Label:       album.Label,
 		Artists:     artists,
 		Genres:      genres,
 		Tracks:      tracks,
+	}
+}
+
+func mapToSimplifiedTrackPb(track *entities.Track) *pb.SimplifiedTrack {
+	if track == nil {
+		return nil
+	}
+
+	var genres []string
+	for _, genre := range track.Genres {
+		genres = append(genres, genre.GetGenreName())
+	}
+
+	artist := mapSimplifiedArtistConcurrently(track.Artists)
+
+	return &pb.SimplifiedTrack{
+		Id:         track.ID,
+		Title:      track.Title,
+		AudioUrl:   track.AudioURL,
+		DurationMs: track.DurationMs,
+		Explicit:   track.Explicit,
+		Lyrics:     track.Lyrics,
+		Genres:     genres,
+		Artists:    artist,
+	}
+}
+
+func mapToSimplifiedAlbumPb(album *entities.Album) *pb.SimplifiedAlbum {
+	if album == nil {
+		return nil
+	}
+	return &pb.SimplifiedAlbum{
+		Id:          album.ID,
+		Title:       album.Title,
+		AlbumType:   string(album.AlbumType),
+		TotalTracks: album.TotalTracks,
+		ReleaseDate: timestamppb.New(album.ReleaseDate),
+		Image:       album.Image,
+		Label:       album.Label,
+	}
+}
+
+func mapSimplifiedArtistConcurrently(artists []*entities.Artist) []*pb.SimplifiedArtist {
+	var wg sync.WaitGroup
+	result := make([]*pb.SimplifiedArtist, len(artists))
+	for i, artist := range artists {
+		wg.Add(1)
+		go func(i int, artist *entities.Artist) {
+			defer wg.Done()
+			result[i] = mapToSimplifiedArtistPb(artist)
+		}(i, artist)
+	}
+	wg.Wait()
+	return result
+}
+
+func mapToSimplifiedArtistPb(artist *entities.Artist) *pb.SimplifiedArtist {
+	if artist == nil {
+		return nil
+	}
+	return &pb.SimplifiedArtist{
+		Id:   artist.ID,
+		Name: artist.Name,
 	}
 }
 
@@ -84,42 +162,28 @@ func mapArtistsConcurrently(artists []*entities.Artist) []*pb.Artist {
 	return result
 }
 
-func mapAlbumsConcurrently(albums []*entities.Album) []*pb.Album {
+func mapSimplifiedAlbumsConcurrently(albums []*entities.Album) []*pb.SimplifiedAlbum {
 	var wg sync.WaitGroup
-	result := make([]*pb.Album, len(albums))
+	result := make([]*pb.SimplifiedAlbum, len(albums))
 	for i, album := range albums {
 		wg.Add(1)
 		go func(i int, album *entities.Album) {
 			defer wg.Done()
-			result[i] = MapToAlbumPb(album)
+			result[i] = mapToSimplifiedAlbumPb(album)
 		}(i, album)
 	}
 	wg.Wait()
 	return result
 }
 
-func mapGenresConcurrently(genres []*entities.Genre) []*pb.Genre {
+func mapSimplifiedTracksConcurrently(tracks []*entities.Track) []*pb.SimplifiedTrack {
 	var wg sync.WaitGroup
-	result := make([]*pb.Genre, len(genres))
-	for i, genre := range genres {
-		wg.Add(1)
-		go func(i int, genre *entities.Genre) {
-			defer wg.Done()
-			result[i] = MapToGenrePb(genre)
-		}(i, genre)
-	}
-	wg.Wait()
-	return result
-}
-
-func mapTracksConcurrently(tracks []*entities.Track) []*pb.Track {
-	var wg sync.WaitGroup
-	result := make([]*pb.Track, len(tracks))
+	result := make([]*pb.SimplifiedTrack, len(tracks))
 	for i, track := range tracks {
 		wg.Add(1)
 		go func(i int, track *entities.Track) {
 			defer wg.Done()
-			result[i] = MapToTrackPb(track)
+			result[i] = mapToSimplifiedTrackPb(track)
 		}(i, track)
 	}
 	wg.Wait()

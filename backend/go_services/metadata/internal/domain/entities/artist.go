@@ -3,8 +3,6 @@ package entities
 import (
 	"time"
 
-	"rhythmony.com/metadata/internal/domain/vo"
-
 	"github.com/oklog/ulid/v2"
 	"gorm.io/gorm"
 )
@@ -17,7 +15,6 @@ type Artist struct {
 	Name       string         `gorm:"column:name;size:50;not null" db:"name"`
 	Bio        string         `gorm:"column:bio;type:TEXT" db:"bio"`
 	Image      string         `gorm:"column:image" db:"image"`
-	Type       vo.Type        `gorm:"-" db:"-"`
 	Popularity int32          `gorm:"column:popularity" db:"popularity"`
 	Genres     []*Genre       `gorm:"many2many:artist_genres" db:"-"`
 	Albums     []*Album       `gorm:"many2many:album_artists" db:"-"`
@@ -29,6 +26,5 @@ func NewArtist(name, bio string) *Artist {
 		ID:   ulid.Make().String(),
 		Name: name,
 		Bio:  bio,
-		Type: vo.ARTIST,
 	}
 }

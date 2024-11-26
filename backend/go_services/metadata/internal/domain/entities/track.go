@@ -3,8 +3,6 @@ package entities
 import (
 	"time"
 
-	"rhythmony.com/metadata/internal/domain/vo"
-
 	"github.com/oklog/ulid/v2"
 	"gorm.io/gorm"
 )
@@ -18,8 +16,7 @@ type Track struct {
 	Title      string         `gorm:"column:title;not null;size:60" db:"title"`
 	DurationMs *int32         `gorm:"column:duration_ms" db:"duration_ms"`
 	Explicit   *bool          `gorm:"column:explicit" db:"explicit"`
-	Type       vo.Type        `gorm:"-" db:"-"`
-	Lyrics     string         `gorm:"column:lyrics;type:TEXT" db:"lyrics"`
+	Lyrics     *string        `gorm:"column:lyrics;type:TEXT" db:"lyrics"`
 	Popularity int32          `gorm:"column:popularity" db:"popularity"`
 	IsFeatured bool           `gorm:"column:is_featured" db:"is_featured"`
 	Genres     []*Genre       `gorm:"many2many:track_genres" db:"-"`
@@ -27,14 +24,13 @@ type Track struct {
 	Artists    []*Artist      `gorm:"many2many:artist_tracks" db:"-"`
 }
 
-func NewTrack(title string, explicit *bool, lyrics string, artists []*Artist) *Track {
+func NewTrack(title string, explicit *bool, lyrics *string, artists []*Artist) *Track {
 	return &Track{
 		ID:         ulid.Make().String(),
 		Title:      title,
 		Artists:    artists,
 		Explicit:   explicit,
 		Lyrics:     lyrics,
-		Type:       vo.TRACK,
 		IsFeatured: false,
 	}
 }

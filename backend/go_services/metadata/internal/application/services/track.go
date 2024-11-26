@@ -7,16 +7,16 @@ import (
 	"rhythmony.com/grpc/generated/pb"
 	"rhythmony.com/metadata/internal/application/mapper"
 	"rhythmony.com/metadata/internal/domain/entities"
-	"rhythmony.com/metadata/internal/infrastructure/store"
+	"rhythmony.com/metadata/internal/domain/repository"
 )
 
 type TrackService struct {
 	pb.UnimplementedTrackAPIServer
-	trackRepository *store.TrackRepository
+	trackRepository repository.ITrackRepository
 	logger          *zap.Logger
 }
 
-func NewTrackService(trackRepository *store.TrackRepository, logger *zap.Logger) pb.TrackAPIServer {
+func NewTrackService(trackRepository repository.ITrackRepository, logger *zap.Logger) pb.TrackAPIServer {
 	return &TrackService{
 		trackRepository: trackRepository,
 		logger:          logger,
@@ -39,13 +39,24 @@ func (s *TrackService) ListSeveralTracks(ctx context.Context, request *pb.ListSe
 
 	trackPage, err := s.trackRepository.FindAllByPagination(ctx, int(request.GetPageSize()), int(request.GetPageNo()))
 	if err != nil {
+		s.logger.Error("Fail to list several tracks", zap.Error(err))
 		return nil, err
 	}
+
 	var res []*pb.Track
-	for _, e := range trackPage.Content {
-		res = append(res, mapper.MapToTrackPb(e))
+	for _, track := range trackPage.Content {
+		trackPb := mapper.MapToTrackPb(track)
+		res = append(res, trackPb)
+
 	}
-	return &pb.ListSeveralTracksResponse{Tracks: res}, nil
+
+	return &pb.ListSeveralTracksResponse{
+		PageSize:      uint64(trackPage.PageSize),
+		PageNo:        uint64(trackPage.PageNo),
+		TotalPages:    uint64(trackPage.TotalPages),
+		TotalElements: uint64(trackPage.TotalElements),
+		Tracks:        res,
+	}, nil
 }
 
 func (s *TrackService) CreateTrack(ctx context.Context, request *pb.CreateTrackRequest) (*pb.CreateTrackResponse, error) {
@@ -55,7 +66,7 @@ func (s *TrackService) CreateTrack(ctx context.Context, request *pb.CreateTrackR
 		zap.Bool("explicit", request.GetExplicit()),
 		zap.String("lyrics", request.GetLyrics()),
 	)
-	track := entities.NewTrack(request.GetTitle(), request.Explicit, request.GetLyrics(), nil)
+	track := entities.NewTrack(request.GetTitle(), request.Explicit, request.Lyrics, nil)
 	savedTrack, err := s.trackRepository.Save(ctx, track)
 	if err != nil {
 		return nil, err

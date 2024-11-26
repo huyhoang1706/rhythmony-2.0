@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
-	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"net/http"
 	"os"
+
+	"google.golang.org/grpc/reflection"
 	"rhythmony.com/grpc/generated/pb"
 
 	"rhythmony.com/metadata/internal/application/services"
@@ -84,11 +85,17 @@ func StartServer(lc fx.Lifecycle, logger *zap.Logger) *gin.Engine {
 	return r
 }
 
-func ProvideGrpcServer(genreAPIServer pb.GenreAPIServer, artistAPIServer pb.ArtistAPIServer) *grpc.Server {
+func ProvideGrpcServer(
+	genreAPIServer pb.GenreAPIServer,
+	artistAPIServer pb.ArtistAPIServer,
+	trackAPIServer pb.TrackAPIServer,
+	albumAPIServer pb.AlbumAPIServer) *grpc.Server {
 	server := grpc.NewServer()
 	_ = reflection.GRPCServer(server)
 	pb.RegisterGenreAPIServer(server, genreAPIServer)
 	pb.RegisterArtistAPIServer(server, artistAPIServer)
+	pb.RegisterTrackAPIServer(server, trackAPIServer)
+	pb.RegisterAlbumAPIServer(server, albumAPIServer)
 	return server
 }
 

@@ -3,8 +3,6 @@ package entities
 import (
 	"time"
 
-	"rhythmony.com/metadata/internal/domain/vo"
-
 	"gorm.io/gorm"
 
 	"github.com/oklog/ulid/v2"
@@ -27,7 +25,6 @@ type Album struct {
 	AlbumType   AlbumType      `gorm:"column:album_type;size:15" db:"album_type"`
 	TotalTracks int32          `gorm:"column:total_tracks" db:"total_tracks"`
 	ReleaseDate time.Time      `gorm:"column:release_date;not null" db:"release_date"`
-	Type        vo.Type        `gorm:"-" db:"-"`
 	Image       string         `gorm:"column:image" db:"image"`
 	Label       string         `gorm:"column:label" db:"label"`
 	Popularity  int32          `gorm:"column:popularity" db:"popularity"`
@@ -37,9 +34,12 @@ type Album struct {
 }
 
 type AlbumTrack struct {
-	AlbumID    string `gorm:"primaryKey" db:"album_id"`
-	TrackID    string `gorm:"primaryKey" db:"track_id"`
-	DiscNumber int32  `gorm:"column:disc_number" db:"disc_number"`
+	AlbumID    string         `gorm:"primaryKey" db:"album_id"`
+	TrackID    string         `gorm:"primaryKey" db:"track_id"`
+	TrackOrder int32          `gorm:"column:track_order" db:"track_order"`
+	CreatedAt  time.Time      `gorm:"column:created_at" db:"created_at"`
+	UpdatedAt  time.Time      `gorm:"column:updated_at" db:"updated_at"`
+	DeletedAt  gorm.DeletedAt `gorm:"column:deleted_at;index" db:"deleted_at"`
 }
 
 func NewAlbum(title string, albumType AlbumType, releaseDate time.Time, artists []*Artist, image string, label string) *Album {
@@ -51,6 +51,13 @@ func NewAlbum(title string, albumType AlbumType, releaseDate time.Time, artists 
 		Artists:     artists,
 		Image:       image,
 		Label:       label,
-		Type:        vo.ALBUM,
+	}
+}
+
+func AddTrackToAlbum(albumId, trackId string, trackOrder int32) *AlbumTrack {
+	return &AlbumTrack{
+		AlbumID:    albumId,
+		TrackID:    trackId,
+		TrackOrder: trackOrder,
 	}
 }

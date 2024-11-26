@@ -48,7 +48,13 @@ func (s *ArtistService) ListSeveralArtists(ctx context.Context, request *pb.List
 		artistPb := mapper.MapToArtistPb(e)
 		res = append(res, artistPb)
 	}
-	return &pb.ListSeveralArtistsResp{Artists: res}, nil
+	return &pb.ListSeveralArtistsResp{
+		Artists:       res,
+		PageSize:      uint64(artistPage.PageSize),
+		PageNo:        uint64(artistPage.PageNo),
+		TotalPages:    uint64(artistPage.TotalPages),
+		TotalElements: uint64(artistPage.TotalElements),
+	}, nil
 }
 
 func (s *ArtistService) CreateArtist(ctx context.Context, request *pb.CreateArtistRequest) (*pb.CreateArtistResponse, error) {

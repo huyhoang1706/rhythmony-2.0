@@ -39,7 +39,12 @@ func (r *AlbumRepository) FindByID(ctx context.Context, id string) (*entities.Al
 	r.logger.Info("Find album by id", zap.String("id", id))
 	var album entities.Album
 	err := r.db.WithContext(ctx).Model(&entities.Album{}).
-		Preload("Genres").Preload("Artists").Preload("Tracks").Where("id = ?", id).First(&album).Error
+		Preload("Artists").
+		Preload("Tracks", func(tx *gorm.DB) *gorm.DB {
+			return tx.Preload("Artists").Preload("Genres")
+		}).
+		Preload("Genres").
+		Where("id = ?", id).First(&album).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		r.logger.Warn("Album not found", zap.String("id", id))
 		return nil, err
@@ -78,8 +83,13 @@ func (r *AlbumRepository) FindAllByPagination(ctx context.Context, pageSize, pag
 
 	totalPages := int(math.Ceil(float64(totalElements) / float64(pageSize)))
 
-	if err := r.db.WithContext(ctx).Offset((pageNo - 1) * pageSize).Limit(pageSize).
-		Preload("Genres").Preload("Artists").Preload("Tracks").Find(&albums).Error; err != nil {
+	if err := r.db.WithContext(ctx).Offset((pageNo-1)*pageSize).Limit(pageSize).
+		Preload("Genres").
+		Preload("Artists").
+		Preload("Tracks", func(tx *gorm.DB) *gorm.DB {
+			return tx.Preload("Artists").Preload("Genres")
+		}).
+		Find(&albums).Error; err != nil {
 		r.logger.Error("Fail to find albums by pagination")
 		return nil, err
 	}

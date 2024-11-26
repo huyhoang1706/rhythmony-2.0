@@ -6,4 +6,5 @@ var Modules = fx.Options(
 	fx.Provide(NewArtistService),
 	fx.Provide(NewGenreService),
 	fx.Provide(NewTrackService),
+	fx.Provide(NewAlbumService),
 )

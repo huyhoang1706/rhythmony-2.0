@@ -7,7 +7,7 @@ CREATE TABLE albums (
     deleted_at TIMESTAMPTZ,
     title VARCHAR(60) NOT NULL,
     album_type VARCHAR(15),
-    total_track INT,
+    total_tracks INT,
     release_date TIMESTAMPTZ NOT NULL,
     image VARCHAR(255),
     label VARCHAR(255),
