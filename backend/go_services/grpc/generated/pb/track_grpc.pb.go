@@ -19,11 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	TrackAPI_GetTrackById_FullMethodName      = "/rhythmony.metadata.TrackAPI/GetTrackById"
-	TrackAPI_ListSeveralTracks_FullMethodName = "/rhythmony.metadata.TrackAPI/ListSeveralTracks"
-	TrackAPI_CreateTrack_FullMethodName       = "/rhythmony.metadata.TrackAPI/CreateTrack"
-	TrackAPI_UpdateTrack_FullMethodName       = "/rhythmony.metadata.TrackAPI/UpdateTrack"
-	TrackAPI_DeleteTrack_FullMethodName       = "/rhythmony.metadata.TrackAPI/DeleteTrack"
+	TrackAPI_GetTrackById_FullMethodName                = "/rhythmony.metadata.TrackAPI/GetTrackById"
+	TrackAPI_ListSeveralTracks_FullMethodName           = "/rhythmony.metadata.TrackAPI/ListSeveralTracks"
+	TrackAPI_CreateTrack_FullMethodName                 = "/rhythmony.metadata.TrackAPI/CreateTrack"
+	TrackAPI_UpdateTrack_FullMethodName                 = "/rhythmony.metadata.TrackAPI/UpdateTrack"
+	TrackAPI_DeleteTrack_FullMethodName                 = "/rhythmony.metadata.TrackAPI/DeleteTrack"
+	TrackAPI_ListTracksByAlbumId_FullMethodName         = "/rhythmony.metadata.TrackAPI/ListTracksByAlbumId"
+	TrackAPI_ListSeveralTracksByArtistId_FullMethodName = "/rhythmony.metadata.TrackAPI/ListSeveralTracksByArtistId"
 )
 
 // TrackAPIClient is the client API for TrackAPI service.
@@ -35,6 +37,8 @@ type TrackAPIClient interface {
 	CreateTrack(ctx context.Context, in *CreateTrackRequest, opts ...grpc.CallOption) (*CreateTrackResponse, error)
 	UpdateTrack(ctx context.Context, in *UpdateTrackRequest, opts ...grpc.CallOption) (*UpdateTrackResponse, error)
 	DeleteTrack(ctx context.Context, in *DeleteTrackRequest, opts ...grpc.CallOption) (*DeleteTrackResponse, error)
+	ListTracksByAlbumId(ctx context.Context, in *ListTracksByAlbumIdRequest, opts ...grpc.CallOption) (*ListTracksByAlbumIdResponse, error)
+	ListSeveralTracksByArtistId(ctx context.Context, in *ListSeveralTracksByArtistIdRequest, opts ...grpc.CallOption) (*ListSeveralTracksByArtistIdResponse, error)
 }
 
 type trackAPIClient struct {
@@ -95,6 +99,26 @@ func (c *trackAPIClient) DeleteTrack(ctx context.Context, in *DeleteTrackRequest
 	return out, nil
 }
 
+func (c *trackAPIClient) ListTracksByAlbumId(ctx context.Context, in *ListTracksByAlbumIdRequest, opts ...grpc.CallOption) (*ListTracksByAlbumIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListTracksByAlbumIdResponse)
+	err := c.cc.Invoke(ctx, TrackAPI_ListTracksByAlbumId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *trackAPIClient) ListSeveralTracksByArtistId(ctx context.Context, in *ListSeveralTracksByArtistIdRequest, opts ...grpc.CallOption) (*ListSeveralTracksByArtistIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListSeveralTracksByArtistIdResponse)
+	err := c.cc.Invoke(ctx, TrackAPI_ListSeveralTracksByArtistId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TrackAPIServer is the server API for TrackAPI service.
 // All implementations must embed UnimplementedTrackAPIServer
 // for forward compatibility.
@@ -104,6 +128,8 @@ type TrackAPIServer interface {
 	CreateTrack(context.Context, *CreateTrackRequest) (*CreateTrackResponse, error)
 	UpdateTrack(context.Context, *UpdateTrackRequest) (*UpdateTrackResponse, error)
 	DeleteTrack(context.Context, *DeleteTrackRequest) (*DeleteTrackResponse, error)
+	ListTracksByAlbumId(context.Context, *ListTracksByAlbumIdRequest) (*ListTracksByAlbumIdResponse, error)
+	ListSeveralTracksByArtistId(context.Context, *ListSeveralTracksByArtistIdRequest) (*ListSeveralTracksByArtistIdResponse, error)
 	mustEmbedUnimplementedTrackAPIServer()
 }
 
@@ -128,6 +154,12 @@ func (UnimplementedTrackAPIServer) UpdateTrack(context.Context, *UpdateTrackRequ
 }
 func (UnimplementedTrackAPIServer) DeleteTrack(context.Context, *DeleteTrackRequest) (*DeleteTrackResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteTrack not implemented")
+}
+func (UnimplementedTrackAPIServer) ListTracksByAlbumId(context.Context, *ListTracksByAlbumIdRequest) (*ListTracksByAlbumIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListTracksByAlbumId not implemented")
+}
+func (UnimplementedTrackAPIServer) ListSeveralTracksByArtistId(context.Context, *ListSeveralTracksByArtistIdRequest) (*ListSeveralTracksByArtistIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListSeveralTracksByArtistId not implemented")
 }
 func (UnimplementedTrackAPIServer) mustEmbedUnimplementedTrackAPIServer() {}
 func (UnimplementedTrackAPIServer) testEmbeddedByValue()                  {}
@@ -240,6 +272,42 @@ func _TrackAPI_DeleteTrack_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TrackAPI_ListTracksByAlbumId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListTracksByAlbumIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrackAPIServer).ListTracksByAlbumId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TrackAPI_ListTracksByAlbumId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrackAPIServer).ListTracksByAlbumId(ctx, req.(*ListTracksByAlbumIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TrackAPI_ListSeveralTracksByArtistId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListSeveralTracksByArtistIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TrackAPIServer).ListSeveralTracksByArtistId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TrackAPI_ListSeveralTracksByArtistId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TrackAPIServer).ListSeveralTracksByArtistId(ctx, req.(*ListSeveralTracksByArtistIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TrackAPI_ServiceDesc is the grpc.ServiceDesc for TrackAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +334,14 @@ var TrackAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteTrack",
 			Handler:    _TrackAPI_DeleteTrack_Handler,
+		},
+		{
+			MethodName: "ListTracksByAlbumId",
+			Handler:    _TrackAPI_ListTracksByAlbumId_Handler,
+		},
+		{
+			MethodName: "ListSeveralTracksByArtistId",
+			Handler:    _TrackAPI_ListSeveralTracksByArtistId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

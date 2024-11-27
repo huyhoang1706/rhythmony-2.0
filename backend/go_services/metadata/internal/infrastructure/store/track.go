@@ -104,15 +104,14 @@ func (r *TrackRepository) FindAllByPagination(ctx context.Context, pageSize, pag
 }
 
 func (r *TrackRepository) FindTracksByAlbumId(ctx context.Context, albumId string) ([]*entities.Track, error) {
-	var tracks []*entities.Track
-	tx := r.db.WithContext(ctx)
+	var album entities.Album
 
-	err := tx.Preload("Genres").Preload("Artists").Joins("JOIN album_tracks ON album_tracks.track_id = tracks.id").
-		Where("album_tracks.album_id = ?", albumId).Order("track_order ASC").
-		Find(&tracks).Error
-
+	err := r.db.WithContext(ctx).Preload("Tracks", func(tx *gorm.DB) *gorm.DB {
+		return tx.Preload("Genres")
+	}).Where("id = ?", albumId).First(&album).Error
 	if err != nil {
 		return nil, err
 	}
-	return tracks, nil
+
+	return album.Tracks, nil
 }

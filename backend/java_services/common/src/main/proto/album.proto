@@ -15,6 +15,7 @@ service AlbumAPI {
   rpc CreateAlbum(CreateAlbumRequest) returns (CreateAlbumResponse);
   rpc UpdateAlbum(UpdateAlbumRequest) returns (UpdateAlbumResponse);
   rpc DeleteAlbum(DeleteAlbumRequest) returns (DeleteAlbumResponse);
+  rpc ListSeveralAlbumsByArtistId(ListSeveralAlbumsByArtistIdRequest) returns (ListSeveralAlbumsByArtistIdResponse);
 }
 
 message GetAlbumRequest {
@@ -69,4 +70,12 @@ message DeleteAlbumRequest {
 
 message DeleteAlbumResponse {
   string message = 1;
+}
+
+message ListSeveralAlbumsByArtistIdRequest {
+  string artist_id = 1;
+}
+
+message ListSeveralAlbumsByArtistIdResponse {
+  repeated Album album = 1;
 }

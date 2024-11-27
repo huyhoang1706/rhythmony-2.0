@@ -90,3 +90,29 @@ func (r *ArtistRepository) FindAllByPagination(ctx context.Context, pageSize, pa
 	}
 	return &page, nil
 }
+
+func (r *ArtistRepository) FindAllByAlbumId(ctx context.Context, albumId string) ([]*entities.Artist, error) {
+	var album entities.Album
+
+	err := r.db.WithContext(ctx).Preload("Artists", func(tx *gorm.DB) *gorm.DB {
+		return tx.Preload("Genres")
+	}).Where("id = ?", albumId).First(&album).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return album.Artists, nil
+}
+
+func (r *ArtistRepository) FindAllByTrackId(ctx context.Context, trackId string) ([]*entities.Artist, error) {
+	var track entities.Track
+
+	err := r.db.WithContext(ctx).Preload("Artists", func(tx *gorm.DB) *gorm.DB {
+		return tx.Preload("Genres")
+	}).Where("id = ?", trackId).First(&track).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return track.Artists, nil
+}

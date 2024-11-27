@@ -98,3 +98,25 @@ func (s *ArtistService) DeleteArtist(ctx context.Context, request *pb.DeleteArti
 	}
 	return &pb.DeleteArtistResponse{Message: "Delete artist successfully"}, nil
 }
+
+func (s *ArtistService) ListArtistsByAlbumId(ctx context.Context, request *pb.ListArtistsByAlbumIdRequest) (*pb.ListArtistsByAlbumIdResponse, error) {
+	s.logger.Info("List artists by", zap.String("albumId", request.GetAlbumId()))
+
+	artists, err := s.artistRepository.FindAllByAlbumId(ctx, request.GetAlbumId())
+	if err != nil {
+		return nil, err
+	}
+
+	var res []*pb.Artist
+	for _, artist := range artists {
+		res = append(res, mapper.MapToArtistPb(artist))
+	}
+
+	return &pb.ListArtistsByAlbumIdResponse{
+		Artists: res,
+	}, nil
+}
+
+func (s *ArtistService) ListArtistsByTrackId(ctx context.Context, request *pb.ListArtistsByTrackIdRequest) (*pb.ListArtistsByTrackIdResponse, error) {
+	panic("TODO")
+}

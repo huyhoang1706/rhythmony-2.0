@@ -63,4 +63,15 @@ public class ArtistServiceClient {
         DeleteArtistResponse response = artistAPIBlockingStub.deleteArtist(request);
         return response.getMessage();
     }
+
+    public List<Artist> listArtistsByAlbumId(String albumId) {
+        ListArtistsByAlbumIdRequest request = ListArtistsByAlbumIdRequest.newBuilder()
+                .setAlbumId(albumId)
+                .build();
+        ListArtistsByAlbumIdResponse response = artistAPIBlockingStub.listArtistsByAlbumId(request);
+        return response.getArtistsList()
+                .stream()
+                .map(artistMapper::toArtist)
+                .toList();
+    }
 }

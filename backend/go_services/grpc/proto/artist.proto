@@ -14,6 +14,8 @@ service ArtistAPI {
     rpc CreateArtist(CreateArtistRequest) returns (CreateArtistResponse);
     rpc UpdateArtist(UpdateArtistRequest) returns (UpdateArtistResponse);
     rpc DeleteArtist(DeleteArtistRequest) returns (DeleteArtistResponse);
+    rpc ListArtistsByAlbumId(ListArtistsByAlbumIdRequest) returns (ListArtistsByAlbumIdResponse);
+    rpc ListArtistsByTrackId(ListArtistsByTrackIdRequest) returns (ListArtistsByTrackIdResponse);
 }
 
 message GetArtistRequest {
@@ -66,4 +68,18 @@ message DeleteArtistResponse {
     string message = 1;
 }
 
+message ListArtistsByAlbumIdRequest {
+    string album_id = 1;
+}
 
+message ListArtistsByAlbumIdResponse {
+    repeated Artist artists = 1;
+}
+
+message ListArtistsByTrackIdRequest {
+    string track_id = 1;
+}
+
+message ListArtistsByTrackIdResponse {
+    repeated Artist artist = 1;
+}

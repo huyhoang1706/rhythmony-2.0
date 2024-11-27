@@ -19,11 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	ArtistAPI_GetArtistById_FullMethodName      = "/rhythmony.metadata.ArtistAPI/GetArtistById"
-	ArtistAPI_ListSeveralArtists_FullMethodName = "/rhythmony.metadata.ArtistAPI/ListSeveralArtists"
-	ArtistAPI_CreateArtist_FullMethodName       = "/rhythmony.metadata.ArtistAPI/CreateArtist"
-	ArtistAPI_UpdateArtist_FullMethodName       = "/rhythmony.metadata.ArtistAPI/UpdateArtist"
-	ArtistAPI_DeleteArtist_FullMethodName       = "/rhythmony.metadata.ArtistAPI/DeleteArtist"
+	ArtistAPI_GetArtistById_FullMethodName        = "/rhythmony.metadata.ArtistAPI/GetArtistById"
+	ArtistAPI_ListSeveralArtists_FullMethodName   = "/rhythmony.metadata.ArtistAPI/ListSeveralArtists"
+	ArtistAPI_CreateArtist_FullMethodName         = "/rhythmony.metadata.ArtistAPI/CreateArtist"
+	ArtistAPI_UpdateArtist_FullMethodName         = "/rhythmony.metadata.ArtistAPI/UpdateArtist"
+	ArtistAPI_DeleteArtist_FullMethodName         = "/rhythmony.metadata.ArtistAPI/DeleteArtist"
+	ArtistAPI_ListArtistsByAlbumId_FullMethodName = "/rhythmony.metadata.ArtistAPI/ListArtistsByAlbumId"
+	ArtistAPI_ListArtistsByTrackId_FullMethodName = "/rhythmony.metadata.ArtistAPI/ListArtistsByTrackId"
 )
 
 // ArtistAPIClient is the client API for ArtistAPI service.
@@ -35,6 +37,8 @@ type ArtistAPIClient interface {
 	CreateArtist(ctx context.Context, in *CreateArtistRequest, opts ...grpc.CallOption) (*CreateArtistResponse, error)
 	UpdateArtist(ctx context.Context, in *UpdateArtistRequest, opts ...grpc.CallOption) (*UpdateArtistResponse, error)
 	DeleteArtist(ctx context.Context, in *DeleteArtistRequest, opts ...grpc.CallOption) (*DeleteArtistResponse, error)
+	ListArtistsByAlbumId(ctx context.Context, in *ListArtistsByAlbumIdRequest, opts ...grpc.CallOption) (*ListArtistsByAlbumIdResponse, error)
+	ListArtistsByTrackId(ctx context.Context, in *ListArtistsByTrackIdRequest, opts ...grpc.CallOption) (*ListArtistsByTrackIdResponse, error)
 }
 
 type artistAPIClient struct {
@@ -95,6 +99,26 @@ func (c *artistAPIClient) DeleteArtist(ctx context.Context, in *DeleteArtistRequ
 	return out, nil
 }
 
+func (c *artistAPIClient) ListArtistsByAlbumId(ctx context.Context, in *ListArtistsByAlbumIdRequest, opts ...grpc.CallOption) (*ListArtistsByAlbumIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListArtistsByAlbumIdResponse)
+	err := c.cc.Invoke(ctx, ArtistAPI_ListArtistsByAlbumId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *artistAPIClient) ListArtistsByTrackId(ctx context.Context, in *ListArtistsByTrackIdRequest, opts ...grpc.CallOption) (*ListArtistsByTrackIdResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListArtistsByTrackIdResponse)
+	err := c.cc.Invoke(ctx, ArtistAPI_ListArtistsByTrackId_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ArtistAPIServer is the server API for ArtistAPI service.
 // All implementations must embed UnimplementedArtistAPIServer
 // for forward compatibility.
@@ -104,6 +128,8 @@ type ArtistAPIServer interface {
 	CreateArtist(context.Context, *CreateArtistRequest) (*CreateArtistResponse, error)
 	UpdateArtist(context.Context, *UpdateArtistRequest) (*UpdateArtistResponse, error)
 	DeleteArtist(context.Context, *DeleteArtistRequest) (*DeleteArtistResponse, error)
+	ListArtistsByAlbumId(context.Context, *ListArtistsByAlbumIdRequest) (*ListArtistsByAlbumIdResponse, error)
+	ListArtistsByTrackId(context.Context, *ListArtistsByTrackIdRequest) (*ListArtistsByTrackIdResponse, error)
 	mustEmbedUnimplementedArtistAPIServer()
 }
 
@@ -128,6 +154,12 @@ func (UnimplementedArtistAPIServer) UpdateArtist(context.Context, *UpdateArtistR
 }
 func (UnimplementedArtistAPIServer) DeleteArtist(context.Context, *DeleteArtistRequest) (*DeleteArtistResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteArtist not implemented")
+}
+func (UnimplementedArtistAPIServer) ListArtistsByAlbumId(context.Context, *ListArtistsByAlbumIdRequest) (*ListArtistsByAlbumIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListArtistsByAlbumId not implemented")
+}
+func (UnimplementedArtistAPIServer) ListArtistsByTrackId(context.Context, *ListArtistsByTrackIdRequest) (*ListArtistsByTrackIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListArtistsByTrackId not implemented")
 }
 func (UnimplementedArtistAPIServer) mustEmbedUnimplementedArtistAPIServer() {}
 func (UnimplementedArtistAPIServer) testEmbeddedByValue()                   {}
@@ -240,6 +272,42 @@ func _ArtistAPI_DeleteArtist_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _ArtistAPI_ListArtistsByAlbumId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListArtistsByAlbumIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArtistAPIServer).ListArtistsByAlbumId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArtistAPI_ListArtistsByAlbumId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArtistAPIServer).ListArtistsByAlbumId(ctx, req.(*ListArtistsByAlbumIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _ArtistAPI_ListArtistsByTrackId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListArtistsByTrackIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ArtistAPIServer).ListArtistsByTrackId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: ArtistAPI_ListArtistsByTrackId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ArtistAPIServer).ListArtistsByTrackId(ctx, req.(*ListArtistsByTrackIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ArtistAPI_ServiceDesc is the grpc.ServiceDesc for ArtistAPI service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -266,6 +334,14 @@ var ArtistAPI_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteArtist",
 			Handler:    _ArtistAPI_DeleteArtist_Handler,
+		},
+		{
+			MethodName: "ListArtistsByAlbumId",
+			Handler:    _ArtistAPI_ListArtistsByAlbumId_Handler,
+		},
+		{
+			MethodName: "ListArtistsByTrackId",
+			Handler:    _ArtistAPI_ListArtistsByTrackId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

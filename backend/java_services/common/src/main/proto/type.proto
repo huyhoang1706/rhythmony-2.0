@@ -5,8 +5,6 @@ option go_package = "pb/";
 option java_package = "com.rhythmony.metadata.pb";
 option java_multiple_files = true;
 
-import "google/protobuf/timestamp.proto";
-
 message Genre {
   string name = 1;
 }
@@ -20,9 +18,7 @@ message Track {
   optional string lyrics = 6;
   int32 popularity = 7;
   string audio_url = 8;
-  repeated SimplifiedArtist artists = 9;
-  repeated SimplifiedAlbum albums = 10;
-  repeated string genres = 11;
+  repeated string genres = 9;
 }
 
 message Artist {
@@ -40,38 +36,10 @@ message Album {
   string title = 2;
   string album_type = 3;
   int32 total_tracks = 4;
-  google.protobuf.Timestamp release_date = 5;
+  string release_date = 5;
   string type = 6;
   string image = 7;
   repeated string genres = 8;
   string label = 9;
-  uint32 popularity = 10;
-  repeated SimplifiedArtist artists = 11;
-  repeated SimplifiedTrack tracks = 12;
-}
-
-message SimplifiedArtist {
-  string id = 1;
-  string name = 2;
-}
-
-message SimplifiedAlbum {
-  string id = 1;
-  string title = 2;
-  string album_type = 3;
-  int32 total_tracks = 4;
-  google.protobuf.Timestamp release_date = 5;
-  string image = 6;
-  string label = 7;
-}
-
-message SimplifiedTrack {
-  string id = 1;
-  string title = 2;
-  optional int32 duration_ms = 3;
-  optional bool explicit = 4;
-  optional string lyrics = 5;
-  repeated SimplifiedArtist artists = 6;
-  string audio_url = 7;
-  repeated string genres = 8;
+  int32 popularity = 10;
 }

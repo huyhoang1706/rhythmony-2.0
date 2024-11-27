@@ -1,6 +1,7 @@
 package com.rhythmony.metadatadgs.mapper;
 
 import com.rhythmony.metadatadgs.codegen.types.Artist;
+import com.rhythmony.metadatadgs.codegen.types.SimplifiedArtist;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -17,6 +18,7 @@ public class ArtistMapperImpl implements ArtistMapper {
                 .image(artistPb.getImage())
                 .popularity(artistPb.getPopularity())
                 .type(artistPb.getType())
+                .genres(artistPb.getGenresList())
                 .build();
     }
 }

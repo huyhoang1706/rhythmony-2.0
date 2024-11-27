@@ -41,8 +41,8 @@ type Album {
     label: String
     popularity: Int
     genres: [String]
-    artists: [SimplifiedArtist!]
-    tracks: [SimplifiedTrack!]
+    artists: [Artist!]
+    tracks: [Track!]
 }
 
 type Track {
@@ -55,34 +55,8 @@ type Track {
     popularity: Int
     audioUrl: String
     genres: [String]
-    artists: [SimplifiedArtist!]!
-    albums: [SimplifiedAlbum!]!
-}
-
-type SimplifiedArtist {
-    id: String!
-    name: String!
-}
-
-type SimplifiedAlbum {
-    id: String!
-    title: String!
-    albumType: String
-    totalTracks: Int
-    releaseDate: String
-    image: String
-    label: String
-}
-
-type SimplifiedTrack {
-    id: String!
-    title: String!
-    durationMs: Int
-    explicit: Boolean
-    lyrics: String
-    popularity: Int
-    audioUrl: String
-    genres: [String]
+    artists: [Artist!]
+    albums: [Album!]
 }
 
 input ArtistInput {

@@ -83,3 +83,20 @@ func (s *TrackService) UpdateTrack(ctx context.Context, request *pb.UpdateTrackR
 func (s *TrackService) DeleteTrack(ctx context.Context, request *pb.DeleteTrackRequest) (*pb.DeleteTrackResponse, error) {
 	return nil, nil
 }
+
+func (s *TrackService) ListTracksByAlbumId(ctx context.Context, request *pb.ListTracksByAlbumIdRequest) (*pb.ListTracksByAlbumIdResponse, error) {
+	s.logger.Info("Get tracks by", zap.String("albumId", request.GetAlbumId()))
+	tracks, err := s.trackRepository.FindTracksByAlbumId(ctx, request.GetAlbumId())
+	if err != nil {
+		return nil, err
+	}
+
+	var res []*pb.Track
+	for _, track := range tracks {
+		res = append(res, mapper.MapToTrackPb(track))
+	}
+
+	return &pb.ListTracksByAlbumIdResponse{
+		Tracks: res,
+	}, nil
+}

@@ -14,6 +14,8 @@ service TrackAPI {
   rpc CreateTrack(CreateTrackRequest) returns (CreateTrackResponse);
   rpc UpdateTrack(UpdateTrackRequest) returns (UpdateTrackResponse);
   rpc DeleteTrack(DeleteTrackRequest) returns (DeleteTrackResponse);
+  rpc ListTracksByAlbumId(ListTracksByAlbumIdRequest) returns (ListTracksByAlbumIdResponse);
+  rpc ListSeveralTracksByArtistId(ListSeveralTracksByArtistIdRequest) returns (ListSeveralTracksByArtistIdResponse);
 }
 
 message GetTrackByIdRequest {
@@ -69,3 +71,26 @@ message DeleteTrackRequest {
 message DeleteTrackResponse {
   string message = 1;
 }
+
+message ListTracksByAlbumIdRequest {
+  string album_id = 1;
+}
+
+message ListTracksByAlbumIdResponse {
+  repeated Track tracks = 1;
+}
+
+message ListSeveralTracksByArtistIdRequest {
+  string artist_id = 1;
+  uint64 page_size = 2;
+  uint64 page_no = 3;
+}
+
+message ListSeveralTracksByArtistIdResponse {
+  uint64 page_size = 1;
+  uint64 page_no = 2;
+  uint64 total_pages = 3;
+  uint64 total_elements = 4;
+  repeated Track track = 5;
+}
+
