@@ -1,0 +1,25 @@
+plugins {
+    id 'com.netflix.dgs.codegen'
+    id 'java-conventions'
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('netflixDgsVersion', "9.1.3")
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "com.netflix.graphql.dgs:graphql-dgs-platform-dependencies:${netflixDgsVersion}"
+    }
+}
+
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter'
+    testImplementation 'com.netflix.graphql.dgs:graphql-dgs-spring-graphql-starter-test'
+}

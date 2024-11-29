@@ -1,0 +1,19 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+repositories {
+    gradlePluginPortal() // so that external plugins can be resolved in dependencies section
+}
+
+dependencies {
+    implementation 'com.github.spotbugs.snom:spotbugs-gradle-plugin:5.2.1'
+    testImplementation platform("org.spockframework:spock-bom:2.2-groovy-3.0")
+    testImplementation 'org.spockframework:spock-core'
+    implementation 'org.springframework.boot:spring-boot-gradle-plugin:3.3.5'
+    runtimeOnly 'io.spring.gradle:dependency-management-plugin:1.1.6'
+    implementation 'com.netflix.dgs.codegen:com.netflix.dgs.codegen.gradle.plugin:6.2.1'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+    annotationProcessor  'jakarta.annotation:jakarta.annotation-api:1.3.5'
+}
+

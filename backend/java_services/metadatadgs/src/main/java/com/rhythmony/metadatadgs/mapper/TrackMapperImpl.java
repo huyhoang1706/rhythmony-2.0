@@ -1,6 +1,5 @@
 package com.rhythmony.metadatadgs.mapper;
 
-import com.rhythmony.metadatadgs.codegen.types.SimplifiedTrack;
 import com.rhythmony.metadatadgs.codegen.types.Track;
 import org.springframework.stereotype.Component;
 
@@ -15,6 +14,7 @@ public class TrackMapperImpl implements TrackMapper {
                 .id(track.getId())
                 .title(track.getTitle())
                 .type(track.getType())
+                .audioUrl(track.getAudioUrl())
                 .durationMs(track.getDurationMs())
                 .explicit(track.getExplicit())
                 .lyrics(track.getLyrics())

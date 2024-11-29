@@ -74,4 +74,15 @@ public class ArtistServiceClient {
                 .map(artistMapper::toArtist)
                 .toList();
     }
+
+    public List<Artist> listArtistsByTrackId(String trackId) {
+        ListArtistsByTrackIdRequest request = ListArtistsByTrackIdRequest.newBuilder()
+                .setTrackId(trackId)
+                .build();
+        ListArtistsByTrackIdResponse response = artistAPIBlockingStub.listArtistsByTrackId(request);
+        return response.getArtistList()
+                .stream()
+                .map(artistMapper::toArtist)
+                .toList();
+    }
 }

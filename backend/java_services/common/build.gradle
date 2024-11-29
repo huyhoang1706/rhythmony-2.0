@@ -1,12 +1,11 @@
 plugins {
-    id 'java'
+    id 'java-library'
     id "com.google.protobuf" version "0.9.4"
 }
 
 ext {
-    grpcVersion = '1.61.1'
+    grpcVersion = '1.63.0'
     protobufVersion = '3.25.5'
-    protocVersion = protobufVersion
 }
 
 dependencies {

@@ -14,14 +14,13 @@ import java.util.List;
 
 @Service
 public class AlbumServiceClient {
+    @GrpcClient("metadata-server")
+    private AlbumAPIGrpc.AlbumAPIBlockingStub albumAPIBlockingStub;
     private final AlbumMapper albumMapper;
 
     public AlbumServiceClient(AlbumMapper albumMapper) {
         this.albumMapper = albumMapper;
     }
-
-    @GrpcClient("metadata-server")
-    private AlbumAPIGrpc.AlbumAPIBlockingStub albumAPIBlockingStub;
 
     public List<Album> listAlbums(Integer pageSize, Integer pageNo) {
         ListSeveralAlbumsRequest request = ListSeveralAlbumsRequest.newBuilder()
