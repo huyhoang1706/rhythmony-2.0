@@ -1,22 +1,20 @@
-'use client'
+"use client";
 
-import { FETCH_GENRES } from '@/graphql/queries/genre'
-import { Genre } from '@/lib/types'
-import { useQuery } from '@apollo/client'
-import { useEffect, useState } from 'react'
+import { useGenresQuery } from "@/generated/graphql";
+import { Genre } from "@/lib/types";
 
 export default function Genres() {
-  const { loading, error, data } = useQuery(FETCH_GENRES)
+  const { loading, error, data } = useGenresQuery();
 
   const formatGenre = (genre: string) => {
     return genre
-      .split('-')
+      .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ')
-  }
+      .join(" ");
+  };
 
-  if (loading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
       {data?.genres.map((genre: Genre) => (
@@ -28,5 +26,5 @@ export default function Genres() {
         </div>
       ))}
     </div>
-  )
+  );
 }

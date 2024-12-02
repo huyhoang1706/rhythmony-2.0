@@ -2,6 +2,7 @@
 
 import LeftSideBar from "@/components/left-sidebar";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import Queue from "./queue";
 
 interface Props {
   children: React.ReactNode;
@@ -24,7 +25,9 @@ export default function ResizeLayout({ children, defaultLayout = [20, 60, 20] }:
       </ResizablePanel>
       <ResizableHandle className="opacity-0" />
       <ResizablePanel id="right-side" defaultSize={defaultLayout[2]} maxSize={25}>
-        RightSize
+        <aside className="h-full rounded-lg bg-neutral-800 p-5">
+          <Queue />
+        </aside>
       </ResizablePanel>
     </ResizablePanelGroup>
   );
