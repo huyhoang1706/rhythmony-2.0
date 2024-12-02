@@ -1,0 +1,18 @@
+query getTrackDetail($trackId: String!, $albumId: String!) {
+  track(id: $trackId) {
+    id
+    title
+    durationMs
+    explicit
+    lyrics
+    audioUrl
+    artists {
+      id
+      name
+    }
+  }
+  album(id: $albumId) {
+    image
+    releaseDate
+  }
+}

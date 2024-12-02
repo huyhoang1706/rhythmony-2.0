@@ -1,0 +1,38 @@
+query GetSeveralAlbum($pageSize: Int = 10, $pageNo: Int = 1) {
+  albums(pageSize: $pageSize, pageNo: $pageNo) {
+    id
+    title
+    image
+    artists {
+      id
+      name
+    }
+  }
+}
+
+query GetAlbumById($id: String!) {
+  album(id: $id) {
+    id
+    title
+    image
+    totalTracks
+    type
+    releaseDate
+    label
+    albumType
+    artists {
+      id
+      name
+    }
+    tracks {
+      id
+      title
+      durationMs
+      audioUrl
+      artists {
+        id
+        name
+      }
+    }
+  }
+}

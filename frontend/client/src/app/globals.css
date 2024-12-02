@@ -8,6 +8,21 @@
   }
 }
 
+@keyframes wave {
+  0%,
+  100% {
+    transform: scaleY(0.5);
+  }
+  50% {
+    transform: scaleY(1.1);
+  }
+}
+
+/* Utility classes for the animation */
+.animate-wave {
+  animation: wave 1s infinite ease-in-out;
+}
+
 .transport-button {
   @apply relative flex transform items-center justify-center transition-transform duration-300 ease-in-out hover:scale-110;
 }

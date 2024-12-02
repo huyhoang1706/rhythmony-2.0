@@ -1,0 +1,16 @@
+query GetSeveralArtistsQuery($pageSize: Int!, $pageNo: Int!) {
+  artists(pageSize: $pageSize, pageNo: $pageNo) {
+    id
+    name
+    image
+  }
+}
+
+query GetArtistDetails($id: String!) {
+  artist(id: $id) {
+    id
+    name
+    image
+    bio
+  }
+}
