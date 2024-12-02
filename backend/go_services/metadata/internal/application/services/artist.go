@@ -118,5 +118,20 @@ func (s *ArtistService) ListArtistsByAlbumId(ctx context.Context, request *pb.Li
 }
 
 func (s *ArtistService) ListArtistsByTrackId(ctx context.Context, request *pb.ListArtistsByTrackIdRequest) (*pb.ListArtistsByTrackIdResponse, error) {
-	panic("TODO")
+	s.logger.Info("List artist by", zap.String("trackId", request.GetTrackId()))
+
+	artists, err := s.artistRepository.FindAllByTrackId(ctx, request.GetTrackId())
+
+	if err != nil {
+		return nil, err
+	}
+
+	var res []*pb.Artist
+	for _, artist := range artists {
+		res = append(res, mapper.MapToArtistPb(artist))
+	}
+
+	return &pb.ListArtistsByTrackIdResponse{
+		Artist: res,
+	}, nil
 }

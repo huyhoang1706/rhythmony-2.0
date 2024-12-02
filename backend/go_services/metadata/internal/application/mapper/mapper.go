@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"rhythmony.com/grpc/generated/pb"
+	"rhythmony.com/metadata/internal/application/utils"
 	"rhythmony.com/metadata/internal/domain/entities"
 	"rhythmony.com/metadata/internal/domain/vo"
 )
@@ -28,7 +29,7 @@ func MapToArtistPb(artist *entities.Artist) *pb.Artist {
 		Name:       artist.Name,
 		Bio:        artist.Bio,
 		Type:       string(vo.ARTIST),
-		Image:      artist.Image,
+		Image:      utils.GetURL(artist.Image),
 		Popularity: artist.Popularity,
 		Genres:     genres,
 	}
@@ -52,7 +53,7 @@ func MapToTrackPb(track *entities.Track) *pb.Track {
 		Type:       string(vo.TRACK),
 		Popularity: int32(track.Popularity),
 		Lyrics:     track.Lyrics,
-		AudioUrl:   track.AudioURL,
+		AudioUrl:   utils.GetURL(track.AudioURL),
 		Genres:     genres,
 	}
 }
@@ -74,7 +75,7 @@ func MapToAlbumPb(album *entities.Album) *pb.Album {
 		TotalTracks: int32(album.TotalTracks),
 		ReleaseDate: album.ReleaseDate.Format(time.UnixDate),
 		Type:        string(vo.ALBUM),
-		Image:       album.Image,
+		Image:       utils.GetURL(album.Image),
 		Popularity:  int32(album.Popularity),
 		Label:       album.Label,
 		Genres:      genres,
