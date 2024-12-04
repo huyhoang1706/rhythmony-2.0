@@ -5,8 +5,9 @@ import Link from "next/link";
 import PlayButton from "@/components/play-button";
 import { Clock, Dot, Heart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import TrackPresentation from "@/components/track-presentation";
-import PlayingAnimation from "@/components/playing-animation";
+import PlaylistItem from "@/components/playlist-item";
+import { QueueItem } from "@/lib/types";
+import Gradient from "@/components/gradient";
 
 interface AlbumDetailPageProps {
   params: {
@@ -28,6 +29,9 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
   //@ts-expect-error
   const formattedDate = date.toLocaleDateString("en-US", options);
   const releaseYear = date.getFullYear();
+  const queueItems = data?.album?.tracks?.map((track: Track) => {
+    return { track: track, image: data?.album?.image } as QueueItem;
+  });
 
   if (error) {
     console.error(error);
@@ -35,13 +39,15 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
   }
   return (
     <>
-      <section className="flex select-none gap-5">
-        <div className="relative min-h-[128px] min-w-[128px]">
+      <Gradient className="absolute left-0 top-0" idSelector="album-cover" />
+      <section className="relative z-20 flex select-none gap-5">
+        <div className="relative aspect-square min-w-[128px] max-w-[232px]">
           <Image
-            src={data?.album?.image || ""}
+            id="album-cover"
+            src={data?.album?.image!}
             alt={data?.album?.title}
-            width={300}
-            height={300}
+            width={600}
+            height={600}
             className="rounded-md shadow-lg shadow-black"
             priority
           />
@@ -52,10 +58,10 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
             <h5 className="text-sm font-semibold capitalize text-neutral-200 md:text-base lg:text-lg">
               {data?.album?.albumType === "single" ? "single" : data?.album?.type}
             </h5>
-            <h1 className="truncate text-2xl font-bold text-white sm:text-4xl md:text-6xl lg:text-8xl">
+            <h1 className="z-20 truncate text-2xl font-bold text-white sm:text-4xl md:text-6xl lg:text-8xl">
               {data?.album?.title}
             </h1>
-            <div className="flex items-center gap-1 text-neutral-400 lg:text-lg">
+            <div className="flex items-center gap-1 text-white lg:text-lg">
               {data?.album?.artists?.map((artist: Artist) => (
                 <Link key={artist.id} href={`/artists/${artist.id}`} className="hover:underline">
                   {artist.name}
@@ -68,8 +74,7 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
 
           <div className="flex gap-3">
             <PlayButton
-              playing={true}
-              playingElement={<PlayingAnimation />}
+              queueItems={queueItems}
               notPlayingElement={"Play"}
               className="rounded-full bg-rose-500 px-12 py-2 font-bold text-neutral-100 transition-colors hover:bg-rose-600 hover:text-white"
             />
@@ -81,18 +86,19 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
         </div>
       </section>
 
-      <section className="mt-5">
+      <section className="relative z-20 mt-5">
         <div className="flex items-center gap-5 px-3">
           <div className="w-5 text-end text-lg text-neutral-400">#</div>
           <span className="flex-1 text-lg text-neutral-400">Title</span>
-          <span className="text-neutral-400">
+          <span className="w-20 text-neutral-400">
             <Clock />
           </span>
         </div>
         <Separator className="my-3 bg-neutral-600" />
         <div className="flex flex-col" role="presentation">
           {data?.album?.tracks.map((track: Track, index: number) => (
-            <TrackPresentation
+            <PlaylistItem
+              queueItems={queueItems}
               key={track.id}
               albumId={data?.album?.id}
               image={data?.album?.image}
@@ -105,12 +111,12 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
         </div>
       </section>
 
-      <div className="mt-3 text-neutral-400">
+      <div className="relative z-20 mt-3 text-neutral-400">
         <span>{formattedDate}</span>
         <p className="text-lg">&copy;{data?.album?.label}</p>
       </div>
 
-      <h2 className="mb-3 mt-6 text-2xl font-bold text-white">
+      <h2 className="relative z-20 mb-3 mt-6 text-2xl font-bold text-white">
         Also From {data?.album?.artists[0]?.name}
       </h2>
     </>

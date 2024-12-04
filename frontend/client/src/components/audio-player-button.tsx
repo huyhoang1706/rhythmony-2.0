@@ -1,19 +1,18 @@
 "use client";
 
-import { CirclePause, CirclePlay } from "lucide-react";
 import { useEffect } from "react";
-import { useGlobalAudioPlayer } from "react-use-audio-player";
+import { CirclePause, CirclePlay } from "lucide-react";
+import useAudioStore from "@/hooks/useAudioStore";
 
 export default function AudioPlayerButton() {
-  const { togglePlayPause, playing, isReady } = useGlobalAudioPlayer();
+  const { isPlaying, togglePlay } = useAudioStore();
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.code === "Space") {
         event.preventDefault();
-        if (isReady) {
-          togglePlayPause();
-        }
+
+        togglePlay();
       }
     };
 
@@ -22,19 +21,15 @@ export default function AudioPlayerButton() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [togglePlayPause, isReady]);
+  }, [togglePlay]);
 
   return (
-    <button
-      onClick={togglePlayPause}
-      disabled={!isReady}
-      className="transport-button size-8 text-neutral-400"
-    >
+    <button onClick={togglePlay} className="transport-button size-8 text-neutral-400">
       <div
         className="absolute inset-0 flex items-center justify-center transition-opacity duration-300"
-        key={playing ? "pause" : "play"}
+        key={isPlaying ? "pause" : "play"}
       >
-        {playing ? (
+        {isPlaying ? (
           <CirclePause className="size-8 text-rose-500" />
         ) : (
           <CirclePlay className="size-8 text-rose-500" />

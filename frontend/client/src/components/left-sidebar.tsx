@@ -1,27 +1,32 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { Heart, Home, PlusCircle, SquareLibrary } from 'lucide-react'
-import NavLink from './nav-link'
-import Playlist from './playlist'
+import { useEffect, useState } from "react";
+import { Heart, Home, PlusCircle, SquareLibrary } from "lucide-react";
+import NavLink from "./nav-link";
+import Playlist from "./playlist";
+import { cn } from "@/lib/utils";
 
 export default function LeftSideBar() {
-  const [width, setWidth] = useState<number>(0)
+  const [width, setWidth] = useState<number>(0);
 
   useEffect(() => {
-    const sidebar = document.querySelector('aside')
+    const sidebar = document.querySelector("aside");
     if (sidebar) {
       const observer = new ResizeObserver(([entry]) => {
-        setWidth(entry.contentRect.width)
-      })
-      observer.observe(sidebar)
-      return () => observer.disconnect()
+        setWidth(entry.contentRect.width);
+      });
+      observer.observe(sidebar);
+      return () => observer.disconnect();
     }
-  }, [])
-  const isSmall = width >= 120 && width < 150
-  const isCollapsed = width < 120
+  }, []);
+  const isSmall = width >= 120 && width < 150;
+  const isCollapsed = width < 120;
   return (
-    <aside className="flex h-full min-w-[60px] flex-col rounded-lg bg-neutral-800 p-5 text-neutral-400">
+    <aside
+      className={cn(
+        "flex h-full min-w-[60px] flex-col rounded-lg bg-neutral-800 p-5 text-neutral-400",
+      )}
+    >
       <div className="mb-3 space-y-3">
         <NavLink
           href="/"
@@ -46,7 +51,7 @@ export default function LeftSideBar() {
         />
       </div>
       <div
-        className={`my-3 flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'}`}
+        className={`my-3 flex items-center ${isCollapsed ? "justify-center" : "justify-between"}`}
       >
         {!isCollapsed && <span className="text-xl font-bold text-white">Playlists</span>}
         <button>
@@ -55,5 +60,5 @@ export default function LeftSideBar() {
       </div>
       <Playlist />
     </aside>
-  )
+  );
 }

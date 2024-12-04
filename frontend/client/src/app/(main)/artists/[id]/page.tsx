@@ -1,6 +1,7 @@
 import { getClient } from "@/lib/apollo-client";
 import { Artist, GetArtistDetailsDocument } from "@/generated/graphql";
 import Image from "next/image";
+import Gradient from "@/components/gradient";
 
 interface Props {
   params: {
@@ -28,17 +29,19 @@ export default async function ArtistDetailPage({ params }: Props) {
 
   return (
     <>
+      <Gradient className="absolute left-0 top-0" idSelector="artist-avatar" />
       <section className="flex select-none gap-5">
-        <div className="relative min-h-[128px] min-w-[128px]">
+        <div className="relative aspect-square min-w-[128px] max-w-[300px]">
           <Image
-            src={artist.image || ""}
+            id="artist-avatar"
+            src={artist.image!}
             alt={artist.name}
-            width={300}
-            height={300}
+            width={600}
+            height={600}
             className="rounded-full"
           />
         </div>
-        <div className="flex flex-col justify-between">
+        <div className="relative z-20 flex flex-col justify-between">
           <div className="space-y-3">
             <h5 className="text-sm font-semibold capitalize text-neutral-200 md:text-base lg:text-lg">
               Artist

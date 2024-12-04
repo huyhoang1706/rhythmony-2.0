@@ -25,7 +25,7 @@ export default function ResizeLayout({ children, defaultLayout = [20, 60, 20] }:
       </ResizablePanel>
       <ResizableHandle className="opacity-0" />
       <ResizablePanel id="right-side" defaultSize={defaultLayout[2]} maxSize={25}>
-        <aside className="h-full rounded-lg bg-neutral-800 p-5">
+        <aside className="h-full rounded-lg bg-neutral-800">
           <Queue />
         </aside>
       </ResizablePanel>

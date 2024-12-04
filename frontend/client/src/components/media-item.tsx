@@ -1,6 +1,6 @@
 "use client";
 
-import { Artist } from "@/lib/types";
+import { Artist } from "@/generated/graphql";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -33,7 +33,7 @@ export default function MediaItem({ id, title, image, artists, type }: Props) {
       <Image src={image || ""} alt={title} width={200} height={200} className="mb-1 rounded-md" />
       <h5 className="font-2xl font-semibold text-white">{title}</h5>
       {artists?.map((artist) => (
-        <a href="#" key={artist.id}>
+        <a href="#" key={artist.id} className="text-center">
           {artist.name}
         </a>
       ))}

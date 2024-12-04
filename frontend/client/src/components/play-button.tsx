@@ -1,23 +1,29 @@
-import { cn } from "@/lib/utils";
+"use client";
 
+import { cn } from "@/lib/utils";
+import PlayingAnimation from "./playing-animation";
+import { QueueItem } from "@/lib/types";
+import useAudioStore from "@/hooks/useAudioStore";
 interface Props {
-  playingElement: React.ReactNode;
+  queueItems: QueueItem[];
   notPlayingElement: React.ReactNode;
-  playing: boolean;
-  onClick?: () => void;
   className?: string;
 }
 
-export default function PlayButton({
-  playingElement,
-  notPlayingElement,
-  playing,
-  onClick,
-  className,
-}: Props) {
+export default function PlayButton({ notPlayingElement, className, queueItems }: Props) {
+  const { playPlaylist, isPlaying, togglePlay, current } = useAudioStore();
+  const playing = isPlaying && queueItems.some((item) => item.track.id === current?.track.id);
+
+  const handleClick = () => {
+    if (!playing) {
+      playPlaylist(queueItems, 0);
+    } else {
+      togglePlay();
+    }
+  };
   return (
-    <button onClick={onClick} className={cn("relative", className)}>
-      {playing ? playingElement : notPlayingElement}
+    <button onClick={handleClick} className={cn("relative", className)}>
+      {playing ? <PlayingAnimation /> : notPlayingElement}
     </button>
   );
 }

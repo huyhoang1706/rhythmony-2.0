@@ -13,27 +13,42 @@ import AudioPlayerButton from "./audio-player-button";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function Player() {
-  const { load, loop } = useGlobalAudioPlayer();
+export default function AudioPlayer() {
+  const { load, play, pause, loop } = useGlobalAudioPlayer();
 
-  const { current, volumeStore, isShuffle, toggleShuffle, queue, repeat, handleRepeat } =
-    useAudioStore();
+  const {
+    current,
+    volumeStore,
+    isShuffle,
+    toggleShuffle,
+    repeat,
+    handleRepeat,
+    playNext,
+    playPrevious,
+    isPlaying,
+    setCurrent,
+    playPlaylist,
+  } = useAudioStore();
 
   useEffect(() => {
-    if (current) {
-      if (!current.track.audioUrl) {
-        nextTrack();
-        return;
-      }
-      load(current.track.audioUrl, {
-        autoplay: true,
-        html5: true,
-        format: "mp3",
-        initialVolume: volumeStore / 100,
-        onend: () => handleTrackEnd(),
-      });
+    if (!current || !current.track.audioUrl) return;
+
+    load(current.track.audioUrl, {
+      autoplay: true,
+      html5: true,
+      format: "mp3",
+      initialVolume: volumeStore / 100,
+      onend: () => handleTrackEnd(),
+    });
+  }, [current, setCurrent]);
+
+  useEffect(() => {
+    if (!isPlaying) {
+      pause();
+    } else {
+      play();
     }
-  }, [current, load, queue]);
+  }, [isPlaying]);
 
   useEffect(() => {
     if (repeat === "repeat-1") {
@@ -41,15 +56,18 @@ export default function Player() {
     } else {
       loop(false);
     }
-  }, [repeat, handleRepeat, loop]);
+  }, [repeat]);
 
-  const handleTrackEnd = () => {};
-
-  const nextTrack = () => {};
+  const handleTrackEnd = () => {
+    if (repeat === "repeat-1") {
+      return;
+    }
+    playNext();
+  };
 
   return (
     <footer className="h-[80px]">
-      <div className="flex h-full w-full items-center justify-between rounded-lg bg-gradient-to-b from-white/10 px-5">
+      <div className="grid h-full w-full grid-cols-3 items-center rounded-lg bg-gradient-to-b from-white/10 px-5">
         <div className="flex items-center gap-3">
           {current?.image ? (
             <Image
@@ -64,7 +82,7 @@ export default function Player() {
           )}
 
           <div className="flex flex-col">
-            <Link href={`#`} className="text-white">
+            <Link href={`#`} className="truncate text-white">
               {current?.track.title}
             </Link>
             <div className="flex max-w-[200px] gap-1 overflow-hidden text-neutral-400">
@@ -72,7 +90,7 @@ export default function Player() {
                 <Link
                   href={`/artists/${artist.id}`}
                   key={artist.id}
-                  className="text-sm hover:underline"
+                  className="truncate text-sm hover:underline"
                 >
                   {artist.name}
                 </Link>
@@ -80,16 +98,17 @@ export default function Player() {
             </div>
           </div>
         </div>
-        <div className="flex w-auto flex-col items-center justify-center gap-1">
+
+        <div className="flex flex-col items-center justify-center gap-1">
           <div className="flex items-center gap-3">
             <button className="transport-button" onClick={toggleShuffle}>
               <Shuffle className={`${isShuffle ? "text-rose-500" : "text-neutral-400"}`} />
             </button>
-            <button>
-              <ChevronFirst className="transport-button size-8 text-neutral-400" />
+            <button onClick={playPrevious} className="transport-button">
+              <ChevronFirst className="size-8 text-neutral-400" />
             </button>
             <AudioPlayerButton />
-            <button className="transport-button">
+            <button onClick={playNext} className="transport-button">
               <ChevronLast className="size-8 text-neutral-400" />
             </button>
             <button className="transport-button" onClick={() => handleRepeat()}>
@@ -100,7 +119,8 @@ export default function Player() {
           </div>
           <AudioSeekBar />
         </div>
-        <div className="flex items-center gap-2">
+
+        <div className="flex items-center justify-end gap-2">
           <button>
             <ListMusic className="size-6 text-neutral-400" />
           </button>
