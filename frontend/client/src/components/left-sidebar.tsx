@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Heart, Home, PlusCircle, SquareLibrary } from "lucide-react";
+import { PlusCircle } from "lucide-react";
 import NavLink from "./nav-link";
 import Playlist from "./playlist";
 import { cn } from "@/lib/utils";
+import { PiHouseFill, PiHeart, PiHouseThin, PiHeartFill } from "react-icons/pi";
+import { MdLibraryMusic, MdOutlineLibraryMusic } from "react-icons/md";
 
 export default function LeftSideBar() {
   const [width, setWidth] = useState<number>(0);
@@ -24,28 +26,31 @@ export default function LeftSideBar() {
   return (
     <aside
       className={cn(
-        "flex h-full min-w-[60px] flex-col rounded-lg bg-neutral-800 p-5 text-neutral-400",
+        "flex h-full min-w-[100px] flex-col rounded-lg bg-neutral-800 p-5 text-neutral-400",
       )}
     >
       <div className="mb-3 space-y-3">
         <NavLink
           href="/"
           name="Home"
-          icon={<Home className="size-6 text-white" />}
+          Icon={PiHouseThin}
+          ActiveIcon={PiHouseFill}
           collapsed={isCollapsed}
           small={isSmall}
         />
         <NavLink
           href="/favorites"
           name="Favorites"
-          icon={<Heart className="size-6 text-white" />}
+          Icon={PiHeart}
+          ActiveIcon={PiHeartFill}
           collapsed={isCollapsed}
           small={isSmall}
         />
         <NavLink
           href="/libraries"
           name="Libraries"
-          icon={<SquareLibrary className="size-6 text-white" />}
+          Icon={MdOutlineLibraryMusic}
+          ActiveIcon={MdLibraryMusic}
           collapsed={isCollapsed}
           small={isSmall}
         />

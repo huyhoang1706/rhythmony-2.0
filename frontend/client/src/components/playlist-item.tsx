@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import useAudioStore from "@/hooks/useAudioStore";
 import PlayingAnimation from "./playing-animation";
 
 import { FaPause, FaPlay } from "react-icons/fa6";
@@ -17,38 +16,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MdMoreHoriz } from "react-icons/md";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { playerActions } from "@/store/player-slice";
+import { playlistActions } from "@/store/playlist-slice";
 
 interface Props {
-  queueItems: QueueItem[];
-  albumId: string;
-  image: string;
-  track: Track;
-  title: string;
+  queueItem: QueueItem;
   order: number;
   artists?: Maybe<Array<Artist>>;
+  onClick: () => void;
 }
 
-export default function PlaylistItem({
-  albumId,
-  track,
-  title,
-  order,
-  artists,
-  image,
-  queueItems,
-}: Props) {
-  const { current, queue, playPlaylist, togglePlay, isPlaying, setCurrent, addToQueue } =
-    useAudioStore();
+export default function PlaylistItem({ queueItem, order, artists, onClick }: Props) {
+  const { current, isPlaying } = useSelector((state: RootState) => state.player);
 
-  const playing = track.id === current?.track.id && isPlaying;
-
-  const handlePlay = () => {
-    if (!queue || queue.length === 0) {
-      playPlaylist(queueItems, order - 1);
-    } else {
-      setCurrent({ track, image });
-    }
-  };
+  const playing =
+    isPlaying &&
+    queueItem.track.id === current?.track.id &&
+    queueItem.album.id === current?.album.id;
+  const track = queueItem.track;
+  const album = queueItem.album;
 
   return (
     <div
@@ -65,25 +53,23 @@ export default function PlaylistItem({
         </div>
 
         <div className="hidden w-5 justify-end text-neutral-400 group-hover:flex">
-          {playing ? (
-            <button onClick={togglePlay}>
+          <button onClick={onClick}>
+            {playing ? (
               <FaPause className="size-4 text-rose-500" />
-            </button>
-          ) : (
-            <button onClick={handlePlay}>
+            ) : (
               <FaPlay className="size-4 text-neutral-200" />
-            </button>
-          )}
+            )}
+          </button>
         </div>
         <div className="flex flex-col">
           <Link
-            href={`${albumId}/tracks/${track?.id}`}
+            href={`${album.id}/tracks/${track.id}`}
             className={cn(
               "text-base hover:underline lg:text-lg",
               playing ? "text-rose-500" : "text-white",
             )}
           >
-            {title}
+            {track.title}
           </Link>
           {artists?.map((artist) => (
             <Link
@@ -107,9 +93,7 @@ export default function PlaylistItem({
           </DropdownMenuTrigger>
           <DropdownMenuContent className="bg-neutral-800 text-neutral-400">
             <DropdownMenuItem>Add To Playlist</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => addToQueue({ track, image })}>
-              Add To Queue
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => {}}>Add To Queue</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

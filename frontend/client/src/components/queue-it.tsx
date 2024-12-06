@@ -46,9 +46,9 @@ export default function QueueIt({ queueItem, removable }: Props) {
             <FaPlay className="size-4 text-neutral-100" />
           )}
         </div>
-        {queueItem.image ? (
+        {queueItem.album.image ? (
           <Image
-            src={queueItem.image}
+            src={queueItem.album.image}
             alt={queueItem.track.title}
             width={60}
             height={60}

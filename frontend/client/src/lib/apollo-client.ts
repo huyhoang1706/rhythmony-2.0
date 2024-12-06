@@ -5,7 +5,7 @@ export const { getClient } = registerApolloClient(() => {
   return new ApolloClient({
     cache: new InMemoryCache(),
     link: new HttpLink({
-      uri: "http://localhost:5000/graphql",
+      uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
       fetchOptions: { cache: "force-cache" },
       // alternatively you can override the default `fetchOptions` on a per query basis
       // ```js

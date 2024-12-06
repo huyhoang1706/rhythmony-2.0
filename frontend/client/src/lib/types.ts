@@ -1,6 +1,6 @@
-import { Track } from "@/generated/graphql";
+import { Album, Track } from "@/generated/graphql";
 
 export interface QueueItem {
   track: Track;
-  image: string | null | undefined;
+  album: Album;
 }

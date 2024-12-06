@@ -22,7 +22,7 @@ export default function TrackPlayButton({ queueItem }: Props) {
 
   return (
     <button
-      className="relative rounded-full bg-rose-500 px-12 py-2 font-bold text-neutral-100 transition-colors hover:bg-rose-600 hover:text-white"
+      className="relative w-[132px] rounded-full bg-rose-500 py-2 font-bold text-neutral-100 transition-colors hover:bg-rose-600 hover:text-white"
       onClick={handleClick}
     >
       {playing ? <PlayingAnimation /> : "Play"}

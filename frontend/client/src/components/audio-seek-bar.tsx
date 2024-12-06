@@ -1,31 +1,41 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { useGlobalAudioPlayer } from "react-use-audio-player";
 import { Slider } from "./ui/slider";
-import useAudioStore from "@/hooks/useAudioStore";
-import { convertMsToMinutesAndSeconds } from "@/lib/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
-export default function AudioSeekBar() {
-  const frameRef = useRef<number>();
-  const { current } = useAudioStore();
+interface Props {
+  audioRef: RefObject<HTMLAudioElement>;
+}
+
+export default function AudioSeekBar({ audioRef }: Props) {
   const [currentTime, setCurrentTime] = useState(0);
-  const { getPosition, seek, duration } = useGlobalAudioPlayer();
+  const [duration, setDuration] = useState(0);
+  const { current } = useSelector((state: RootState) => state.player);
 
   useEffect(() => {
-    const animate = () => {
-      setCurrentTime(getPosition());
-      frameRef.current = requestAnimationFrame(animate);
-    };
+    const audio = audioRef.current;
+    if (!audio || !current) return;
 
-    frameRef.current = window.requestAnimationFrame(animate);
+    const updateTime = () => setCurrentTime(audio.currentTime);
+    const updateDuration = () => setDuration(audio.duration);
+
+    audio.addEventListener("timeupdate", updateTime);
+    audio.addEventListener("loadedmetadata", updateDuration);
 
     return () => {
-      if (frameRef.current) {
-        cancelAnimationFrame(frameRef.current);
-      }
+      audio.removeEventListener("timeupdate", updateTime);
+      audio.removeEventListener("loadedmetadata", updateDuration);
     };
-  }, [getPosition]);
+  }, [current, audioRef]);
+
+  const handleSeek = (value: number[]) => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = value[0];
+    }
+  };
 
   const formatDuration = (seconds: number) => {
     const roundedSeconds = Math.round(seconds);
@@ -39,18 +49,12 @@ export default function AudioSeekBar() {
       <div className="w-10 text-end text-sm text-neutral-400">{formatDuration(currentTime)}</div>
       <Slider
         value={[currentTime]}
-        onValueChange={(value) => {
-          seek(value[0]);
-        }}
-        max={duration === 0 ? current?.track.durationMs! : duration}
+        onValueChange={handleSeek}
+        max={duration}
         step={1}
         className="hover:cursor-grab active:cursor-grabbing"
       />
-      <div className="w-10 text-sm text-neutral-400">
-        {duration === 0
-          ? convertMsToMinutesAndSeconds(current?.track.durationMs!)
-          : formatDuration(duration)}
-      </div>
+      <div className="w-10 text-sm text-neutral-400">{formatDuration(duration)}</div>
     </div>
   );
 }

@@ -2,12 +2,13 @@ import { getClient } from "@/lib/apollo-client";
 import { Artist, GetAlbumByIdDocument, Track } from "@/generated/graphql";
 import Image from "next/image";
 import Link from "next/link";
-import PlayButton from "@/components/play-button";
+import PlayPlaylistButton from "@/components/play-playlist-button";
 import { Clock, Dot, Heart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import PlaylistItem from "@/components/playlist-item";
 import { QueueItem } from "@/lib/types";
 import Gradient from "@/components/gradient";
+import PlaylistContainer from "@/components/playlist-container";
 
 interface AlbumDetailPageProps {
   params: {
@@ -30,7 +31,7 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
   const formattedDate = date.toLocaleDateString("en-US", options);
   const releaseYear = date.getFullYear();
   const queueItems = data?.album?.tracks?.map((track: Track) => {
-    return { track: track, image: data?.album?.image } as QueueItem;
+    return { track: track, album: data?.album } as QueueItem;
   });
 
   if (error) {
@@ -69,14 +70,16 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
               ))}
               <Dot />
               {releaseYear}
+              <Dot />
+              <span>{data?.album?.totalTracks} songs</span>
             </div>
           </div>
 
           <div className="flex gap-3">
-            <PlayButton
+            <PlayPlaylistButton
               queueItems={queueItems}
               notPlayingElement={"Play"}
-              className="rounded-full bg-rose-500 px-12 py-2 font-bold text-neutral-100 transition-colors hover:bg-rose-600 hover:text-white"
+              className="w-[132px] rounded-full bg-rose-500 py-2 font-bold text-neutral-100 transition-colors hover:bg-rose-600 hover:text-white"
             />
 
             <button className="rounded-full p-2">
@@ -95,20 +98,7 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
           </span>
         </div>
         <Separator className="my-3 bg-neutral-600" />
-        <div className="flex flex-col" role="presentation">
-          {data?.album?.tracks.map((track: Track, index: number) => (
-            <PlaylistItem
-              queueItems={queueItems}
-              key={track.id}
-              albumId={data?.album?.id}
-              image={data?.album?.image}
-              track={track}
-              title={track.title}
-              order={index + 1}
-              artists={track.artists}
-            />
-          ))}
-        </div>
+        <PlaylistContainer queueItems={queueItems} />
       </section>
 
       <div className="relative z-20 mt-3 text-neutral-400">

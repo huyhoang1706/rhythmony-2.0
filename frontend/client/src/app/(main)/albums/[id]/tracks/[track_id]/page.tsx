@@ -16,7 +16,7 @@ interface Props {
 
 export default async function TrackDetailPage({ params }: Props) {
   const { id, track_id } = await params;
-  const { data, error, loading } = await getClient().query({
+  const { data, error } = await getClient().query({
     query: GetTrackDetailDocument,
     variables: {
       trackId: track_id,
@@ -26,9 +26,6 @@ export default async function TrackDetailPage({ params }: Props) {
 
   const date = new Date(data?.album?.releaseDate);
   const releaseYear = date.getFullYear();
-  if (loading) {
-    return <p>Loading</p>;
-  }
 
   if (error) {
     console.error("error", error);
