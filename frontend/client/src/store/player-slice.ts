@@ -9,6 +9,7 @@ export interface PlayerState {
     nextInQueue: QueueItem[];
     nextFromPlaylist: QueueItem[];
     playHistory: QueueItem[];
+    originalNextFromPlaylist: QueueItem[];
   };
   current: QueueItem | null;
   isPlaying: boolean;
@@ -25,6 +26,7 @@ const playerSlice = createSlice({
       nextInQueue: [],
       nextFromPlaylist: [],
       playHistory: [],
+      originalNextFromPlaylist: [],
     },
     current: null,
     isPlaying: false,
@@ -36,8 +38,14 @@ const playerSlice = createSlice({
   } as PlayerState,
   reducers: {
     setCurrentTrack: (state, action: PayloadAction<QueueItem>) => {
+      // const nextFromPlaylist = state.queues.nextFromPlaylist;
+      // if (nextFromPlaylist.length !== 0) {
+      //   const index = nextFromPlaylist.indexOf(action.payload);
+      //   if (index > -1) {
+      //     state.queues.nextFromPlaylist =
+      //   }
+      // }
       state.current = action.payload;
-      state.playbackStatus = "loading";
     },
     play: (state) => {
       state.isPlaying = true;
@@ -53,6 +61,7 @@ const playerSlice = createSlice({
     },
     setPlaylistQueue: (state, action: PayloadAction<QueueItem[]>) => {
       state.queues.nextFromPlaylist = action.payload;
+      state.queues.originalNextFromPlaylist = [...action.payload];
     },
     addToPlayHistory: (state, action: PayloadAction<QueueItem[]>) => {
       state.queues.playHistory = action.payload;
@@ -71,15 +80,6 @@ const playerSlice = createSlice({
       const { trackId, queueType } = action.payload;
       state.queues[queueType] = state.queues[queueType].filter((item) => item.track.id !== trackId);
     },
-    shuffleQueue: (state, action: PayloadAction<keyof PlayerState["queues"]>) => {
-      const queueType = action.payload;
-      const queue = [...state.queues[queueType]];
-      for (let i = queue.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [queue[i], queue[j]] = [queue[j], queue[i]];
-      }
-      state.queues[queueType] = queue;
-    },
     resetQueue: (state) => {
       if (state.queues.nextFromPlaylist.length === 0) {
         const history = state.queues.playHistory.slice(1);
@@ -87,7 +87,6 @@ const playerSlice = createSlice({
           state.queues.nextFromPlaylist = [...history, state.current];
         }
         state.current = state.queues.playHistory[0];
-        state.playbackStatus = "loading";
       }
     },
     skipToNext: (state) => {
@@ -104,14 +103,13 @@ const playerSlice = createSlice({
         return null;
       };
 
-      if (state.repeatMode === "all") {
+      if (state.repeatMode === "all" && state.queues.nextFromPlaylist.length === 0) {
         const history = state.queues.playHistory.slice(1);
         if (state.current) {
           state.queues.nextFromPlaylist = [...history, state.current];
         }
         state.current = state.queues.playHistory[0];
         state.queues.playHistory = [];
-        state.playbackStatus = "loading";
         return;
       }
 
@@ -121,10 +119,19 @@ const playerSlice = createSlice({
           state.queues.playHistory.push(state.current);
         }
         state.current = nextTrack;
-        state.playbackStatus = "loading";
       }
     },
     skipToPrevious: (state) => {
+      if (state.repeatMode === "all" && state.queues.playHistory.length === 0) {
+        if (state.current) {
+          const remainingTracks = state.queues.nextFromPlaylist;
+          const playHistory = [state.current, ...remainingTracks];
+          state.current = remainingTracks[remainingTracks.length - 1];
+          state.queues.nextFromPlaylist = [];
+          state.queues.playHistory = playHistory;
+          return;
+        }
+      }
       if (state.queues.playHistory.length > 0) {
         if (state.current) {
           state.queues.nextFromPlaylist.unshift(state.current);
@@ -132,7 +139,6 @@ const playerSlice = createSlice({
         const previousTrack = state.queues.playHistory.pop();
         if (previousTrack) {
           state.current = previousTrack;
-          state.playbackStatus = "loading";
         }
       }
     },
@@ -143,6 +149,19 @@ const playerSlice = createSlice({
       state.repeatMode = action.payload;
     },
     toggleShuffle: (state) => {
+      // TODO: restore the index of current
+      if (state.shuffleEnabled) {
+        state.queues.nextFromPlaylist = [...state.queues.originalNextFromPlaylist];
+      } else {
+        // When turning shuffle on, save current order as original and then shuffle
+        state.queues.originalNextFromPlaylist = [...state.queues.nextFromPlaylist];
+        const queue = [...state.queues.nextFromPlaylist];
+        for (let i = queue.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [queue[i], queue[j]] = [queue[j], queue[i]];
+        }
+        state.queues.nextFromPlaylist = queue;
+      }
       state.shuffleEnabled = !state.shuffleEnabled;
     },
     setVolume: (state, action: PayloadAction<number>) => {

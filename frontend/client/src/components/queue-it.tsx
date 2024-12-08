@@ -1,7 +1,6 @@
 "use client";
 
 import { Artist } from "@/generated/graphql";
-import useAudioStore from "@/hooks/useAudioStore";
 import { QueueItem } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,6 +12,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MdMoreHoriz } from "react-icons/md";
 import { FaPlay, FaPause } from "react-icons/fa6";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/store/store";
+import { playerActions } from "@/store/player-slice";
 
 interface Props {
   queueItem: QueueItem;
@@ -20,15 +22,16 @@ interface Props {
 }
 
 export default function QueueIt({ queueItem, removable }: Props) {
-  const { setCurrent, removeFromQueue, togglePlay, isPlaying, current } = useAudioStore();
-
+  const dispatch = useDispatch();
+  const { isPlaying, current } = useSelector((state: RootState) => state.player);
   const playing = queueItem.track.id === current?.track.id && isPlaying;
 
   const handleClick = () => {
     if (playing) {
-      togglePlay();
+      dispatch(playerActions.pause());
     } else {
-      setCurrent(queueItem);
+      dispatch(playerActions.play());
+      // dispatch(playerActions.setCurrentTrack(queueItem));
     }
   };
 
@@ -59,7 +62,7 @@ export default function QueueIt({ queueItem, removable }: Props) {
         )}
       </div>
       <div className="flex min-w-40 flex-1 flex-col">
-        <p className="min-w-max font-semibold text-white">{queueItem.track.title}</p>
+        <p className="min-w-[100px] max-w-52 truncate text-white">{queueItem.track.title}</p>
         {queueItem.track.artists?.map((artist: Artist) => (
           <Link
             key={artist.id}
@@ -77,11 +80,7 @@ export default function QueueIt({ queueItem, removable }: Props) {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="bg-neutral-800 text-neutral-400">
           <DropdownMenuItem>Add To Playlist</DropdownMenuItem>
-          {removable && (
-            <DropdownMenuItem onClick={() => removeFromQueue(queueItem)}>
-              Remove From Queue
-            </DropdownMenuItem>
-          )}
+          {removable && <DropdownMenuItem onClick={() => {}}>Remove From Queue</DropdownMenuItem>}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

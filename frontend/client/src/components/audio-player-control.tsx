@@ -9,13 +9,14 @@ import AudioSeekBar from "./audio-seek-bar";
 import { RefObject, useEffect } from "react";
 
 interface Props {
-  audioRef: RefObject<HTMLAudioElement>;
+  audioRef: RefObject<HTMLAudioElement | null>;
 }
 
 export default function AudioPlayerControl({ audioRef }: Props) {
   const dispatch = useDispatch();
-  const { isPlaying, repeatMode, shuffleEnabled } = useSelector((state: RootState) => state.player);
-  const { current, queues } = useSelector((state: RootState) => state.player);
+  const { current, queues, isPlaying, repeatMode, shuffleEnabled } = useSelector(
+    (state: RootState) => state.player,
+  );
 
   const handleNextTrack = () => {
     dispatch(playerActions.skipToNext());
@@ -35,7 +36,7 @@ export default function AudioPlayerControl({ audioRef }: Props) {
   };
 
   useEffect(() => {
-    const audioElement = audioRef.current;
+    const audioElement = audioRef?.current;
     if (!audioElement || !current) return;
 
     if (isPlaying) {
@@ -55,11 +56,24 @@ export default function AudioPlayerControl({ audioRef }: Props) {
           });
           break;
         case "all":
+          if (
+            current &&
+            queues.nextFromPlaylist.length === 0 &&
+            queues.nextInQueue.length === 0 &&
+            queues.playHistory.length === 0
+          ) {
+            audioElement.currentTime = 0;
+            audioElement.play().catch((error) => {
+              console.error("Playback failed:", error);
+            });
+            break;
+          }
           dispatch(playerActions.skipToNext());
           break;
         default:
           if (queues.nextInQueue.length === 0 && queues.nextFromPlaylist.length === 0) {
             dispatch(playerActions.pause());
+            return;
           }
           dispatch(playerActions.skipToNext());
       }

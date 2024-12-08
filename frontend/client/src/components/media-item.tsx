@@ -9,7 +9,7 @@ interface Props {
   title: string;
   image?: string | null;
   artists?: Artist[] | null;
-  type: "album" | "track";
+  type: "album" | "playlist";
   onClick?: (id: string) => void;
 }
 
@@ -20,7 +20,7 @@ export default function MediaItem({ id, title, image, artists, type }: Props) {
     if (type === "album") {
       router.push(`/albums/${id}`);
     } else {
-      router.push(`/songs/${id}`);
+      router.push(`/playlists/${id}`);
     }
   };
 

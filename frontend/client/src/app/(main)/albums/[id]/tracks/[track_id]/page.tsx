@@ -68,7 +68,7 @@ export default async function TrackDetailPage({ params }: Props) {
           </div>
 
           <div className="flex gap-3">
-            <TrackPlayButton queueItem={{ track: data?.track, image: data?.album?.image }} />
+            <TrackPlayButton queueItem={{ track: data?.track, album: data?.album }} />
 
             <button className="rounded-full p-2">
               <Heart className="text-neutral-200" />

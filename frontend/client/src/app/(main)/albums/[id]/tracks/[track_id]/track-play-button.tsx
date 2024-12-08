@@ -1,22 +1,27 @@
 "use client";
 
 import PlayingAnimation from "@/components/playing-animation";
-import useAudioStore from "@/hooks/useAudioStore";
 import { QueueItem } from "@/lib/types";
+import { playerActions } from "@/store/player-slice";
+import { RootState } from "@/store/store";
+import { useDispatch, useSelector } from "react-redux";
 
 interface Props {
   queueItem: QueueItem;
 }
 export default function TrackPlayButton({ queueItem }: Props) {
-  const { isPlaying, current, setCurrent, togglePlay, clearQueue } = useAudioStore();
+  const dispatch = useDispatch();
+  const { isPlaying, current } = useSelector((state: RootState) => state.player);
   const playing = isPlaying && current === queueItem;
 
   const handleClick = () => {
-    if (playing) {
-      togglePlay();
+    if (current !== queueItem) {
+      // dispatch(playerActions);
+      dispatch(playerActions.setCurrentTrack(queueItem));
+      dispatch(playerActions.play());
+      return;
     } else {
-      clearQueue();
-      setCurrent(queueItem);
+      dispatch(playerActions.togglePlay());
     }
   };
 

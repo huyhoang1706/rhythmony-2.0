@@ -24,9 +24,9 @@
 }
 
 .transport-button {
-  @apply relative flex transform items-center justify-center transition-transform duration-300 ease-in-out hover:scale-110;
+  @apply relative flex transform items-center justify-center border-none outline-none transition-transform duration-300 ease-in-out hover:scale-110;
 }
 
 .custom-scroll-bar {
-  @apply [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-neutral-500 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-inherit [&::-webkit-scrollbar]:w-2;
+  @apply [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-neutral-500 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar]:w-2;
 }

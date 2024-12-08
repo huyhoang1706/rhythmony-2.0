@@ -8,7 +8,7 @@ import { RootState } from "@/store/store";
 import { playerActions } from "@/store/player-slice";
 
 interface Props {
-  audioRef: RefObject<HTMLAudioElement>;
+  audioRef: RefObject<HTMLAudioElement | null>;
 }
 
 export default function AudioVolumeControl({ audioRef }: Props) {
@@ -22,7 +22,7 @@ export default function AudioVolumeControl({ audioRef }: Props) {
   };
 
   const toggleMute = () => {
-    if (!audioRef.current) return;
+    if (!audioRef?.current) return;
     if (!isMuted) {
       audioRef.current.volume = 0;
       setVolume(0);
@@ -47,7 +47,7 @@ export default function AudioVolumeControl({ audioRef }: Props) {
         onValueChange={(value) => {
           setPrevVolume(value[0]);
           setVolume(value[0]);
-          if (audioRef.current) {
+          if (audioRef?.current) {
             audioRef.current.volume = value[0] / 100;
           }
         }}

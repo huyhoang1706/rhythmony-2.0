@@ -12,18 +12,9 @@ interface Props {
   ActiveIcon: IconType;
   className?: string;
   collapsed?: boolean;
-  small?: boolean;
 }
 
-export default function NavLink({
-  href,
-  name,
-  className,
-  Icon,
-  collapsed,
-  small,
-  ActiveIcon,
-}: Props) {
+export default function NavLink({ href, name, className, Icon, collapsed, ActiveIcon }: Props) {
   const pathName = usePathname();
 
   const isActive = pathName === href;
@@ -41,9 +32,7 @@ export default function NavLink({
         ? ActiveIcon && <ActiveIcon className="size-6 text-white" />
         : Icon && <Icon className="size-6 text-neutral-400" />}
       {!collapsed && (
-        <span
-          className={cn("truncate", small ? "text-sm" : "text-lg", isActive ? "text-white" : "")}
-        >
+        <span className={cn("truncate text-sm md:text-lg", isActive ? "text-white" : "")}>
           {name}
         </span>
       )}

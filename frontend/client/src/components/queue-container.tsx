@@ -1,8 +1,6 @@
 "use client";
 
-import useAudioStore from "@/hooks/useAudioStore";
 import QueueIt from "./queue-it";
-import { QueueItem } from "@/lib/types";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 

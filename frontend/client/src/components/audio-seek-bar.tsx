@@ -1,13 +1,12 @@
 "use client";
 
-import { RefObject, useEffect, useRef, useState } from "react";
-import { useGlobalAudioPlayer } from "react-use-audio-player";
+import { RefObject, useEffect, useState } from "react";
 import { Slider } from "./ui/slider";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 
 interface Props {
-  audioRef: RefObject<HTMLAudioElement>;
+  audioRef: RefObject<HTMLAudioElement | null>;
 }
 
 export default function AudioSeekBar({ audioRef }: Props) {
@@ -16,7 +15,7 @@ export default function AudioSeekBar({ audioRef }: Props) {
   const { current } = useSelector((state: RootState) => state.player);
 
   useEffect(() => {
-    const audio = audioRef.current;
+    const audio = audioRef?.current;
     if (!audio || !current) return;
 
     const updateTime = () => setCurrentTime(audio.currentTime);
@@ -32,7 +31,7 @@ export default function AudioSeekBar({ audioRef }: Props) {
   }, [current, audioRef]);
 
   const handleSeek = (value: number[]) => {
-    if (audioRef.current) {
+    if (audioRef?.current) {
       audioRef.current.currentTime = value[0];
     }
   };

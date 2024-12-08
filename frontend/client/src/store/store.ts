@@ -1,10 +1,12 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import playerReducer from "./player-slice";
 import playlistReducer from "./playlist-slice";
+import appLayoutReducer from "./app-layout-slice";
 
 const rootReducer = combineReducers({
   player: playerReducer,
   playlist: playlistReducer,
+  appLayout: appLayoutReducer,
 });
 
 export const makeStore = () => {

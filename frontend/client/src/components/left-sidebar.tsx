@@ -7,58 +7,65 @@ import Playlist from "./playlist";
 import { cn } from "@/lib/utils";
 import { PiHouseFill, PiHeart, PiHouseThin, PiHeartFill } from "react-icons/pi";
 import { MdLibraryMusic, MdOutlineLibraryMusic } from "react-icons/md";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store/store";
 
 export default function LeftSideBar() {
-  const [width, setWidth] = useState<number>(0);
+  const [isCollapse, setIsCollapse] = useState(false);
+  const { isLeftSideBarCollapse } = useSelector((state: RootState) => state.appLayout);
 
   useEffect(() => {
-    const sidebar = document.querySelector("aside");
-    if (sidebar) {
-      const observer = new ResizeObserver(([entry]) => {
-        setWidth(entry.contentRect.width);
-      });
-      observer.observe(sidebar);
-      return () => observer.disconnect();
-    }
-  }, []);
-  const isSmall = width >= 120 && width < 150;
-  const isCollapsed = width < 120;
+    const checkSidebarCollapse = () => {
+      const shouldCollapse = window.innerWidth < 768 || false;
+
+      setIsCollapse(shouldCollapse);
+    };
+
+    checkSidebarCollapse();
+
+    window.addEventListener("resize", checkSidebarCollapse);
+
+    return () => {
+      window.removeEventListener("resize", checkSidebarCollapse);
+    };
+  }, [isCollapse]);
+
+  const shouldCollapse = isCollapse || isLeftSideBarCollapse;
+
   return (
     <aside
       className={cn(
-        "flex h-full min-w-[100px] flex-col rounded-lg bg-neutral-800 p-5 text-neutral-400",
+        "flex h-full flex-col rounded-lg bg-neutral-900 text-neutral-400",
+        shouldCollapse ? "w-[76px]" : "w-[280px] xl:w-[320px]",
       )}
     >
-      <div className="mb-3 space-y-3">
+      <div className="space-y-3 p-5">
         <NavLink
           href="/"
           name="Home"
           Icon={PiHouseThin}
           ActiveIcon={PiHouseFill}
-          collapsed={isCollapsed}
-          small={isSmall}
+          collapsed={shouldCollapse}
         />
         <NavLink
           href="/favorites"
           name="Favorites"
           Icon={PiHeart}
           ActiveIcon={PiHeartFill}
-          collapsed={isCollapsed}
-          small={isSmall}
+          collapsed={shouldCollapse}
         />
         <NavLink
           href="/libraries"
           name="Libraries"
           Icon={MdOutlineLibraryMusic}
           ActiveIcon={MdLibraryMusic}
-          collapsed={isCollapsed}
-          small={isSmall}
+          collapsed={shouldCollapse}
         />
       </div>
       <div
-        className={`my-3 flex items-center ${isCollapsed ? "justify-center" : "justify-between"}`}
+        className={`mb-3 flex items-center px-5 ${shouldCollapse ? "justify-center" : "justify-between"}`}
       >
-        {!isCollapsed && <span className="text-xl font-bold text-white">Playlists</span>}
+        {!shouldCollapse && <span className="text-xl font-bold text-white">Playlists</span>}
         <button>
           <PlusCircle className="text-rose-500" />
         </button>

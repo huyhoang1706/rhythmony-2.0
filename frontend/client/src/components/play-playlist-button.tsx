@@ -31,11 +31,13 @@ export default function PlayPlaylistButton({ notPlayingElement, className, queue
       );
       dispatch(playerActions.setPlaylistQueue(queueItems.slice(1)));
       dispatch(playerActions.setCurrentTrack(queueItems[0]));
+      dispatch(playerActions.play());
+    } else {
+      dispatch(playerActions.togglePlay());
     }
-    dispatch(playerActions.togglePlay());
   };
   return (
-    <button onClick={handleClick} className={cn("relative", className)}>
+    <button onClick={handleClick} className={cn("relative border-none outline-none", className)}>
       {playing ? <PlayingAnimation /> : notPlayingElement}
     </button>
   );
