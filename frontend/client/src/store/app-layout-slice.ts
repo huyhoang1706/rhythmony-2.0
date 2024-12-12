@@ -3,6 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 export interface AppLayoutState {
   isLeftSideBarCollapse: boolean;
   isRightSideBarOpen: boolean;
+  isAuthModalOpen: boolean;
 }
 
 const appLayoutSlice = createSlice({
@@ -10,6 +11,7 @@ const appLayoutSlice = createSlice({
   initialState: {
     isLeftSideBarCollapse: false,
     isRightSideBarOpen: true,
+    isAuthModalOpen: false,
   } as AppLayoutState,
   reducers: {
     toggleCollapseLeftSideBar: (state) => {
@@ -21,9 +23,16 @@ const appLayoutSlice = createSlice({
     toggleOpenRightSideBar: (state) => {
       state.isRightSideBarOpen = !state.isRightSideBarOpen;
     },
+    toggleAuthModal: (state) => {
+      state.isAuthModalOpen = !state.isAuthModalOpen;
+    },
   },
 });
 
-export const { toggleCollapseLeftSideBar, setLeftSideBarCollapse, toggleOpenRightSideBar } =
-  appLayoutSlice.actions;
+export const {
+  toggleCollapseLeftSideBar,
+  setLeftSideBarCollapse,
+  toggleOpenRightSideBar,
+  toggleAuthModal,
+} = appLayoutSlice.actions;
 export default appLayoutSlice.reducer;

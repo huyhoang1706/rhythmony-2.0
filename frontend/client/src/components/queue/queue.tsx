@@ -2,7 +2,7 @@
 
 import { ListMusic } from "lucide-react";
 import QueueContainer from "./queue-container";
-import { ScrollArea } from "./ui/scroll-area";
+import { ScrollArea } from "../ui/scroll-area";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { cn } from "@/lib/utils";
@@ -12,7 +12,7 @@ export default function Queue() {
   return (
     <aside
       className={cn(
-        "h-full w-fit flex-col rounded-lg bg-neutral-900",
+        "h-full w-full min-w-[240px] max-w-[360px] flex-col rounded-lg bg-neutral-900",
         isRightSideBarOpen ? "flex" : "hidden",
       )}
     >
@@ -22,7 +22,6 @@ export default function Queue() {
       </div>
 
       <ScrollArea className="h-full w-full">
-        <h5 className="mb-3 min-w-32 px-5 font-bold text-white">Now Playing</h5>
         <QueueContainer />
       </ScrollArea>
     </aside>

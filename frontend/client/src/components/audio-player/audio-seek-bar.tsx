@@ -1,7 +1,7 @@
 "use client";
 
 import { RefObject, useEffect, useState } from "react";
-import { Slider } from "./ui/slider";
+import { Slider } from "../ui/slider";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 

@@ -1,13 +1,13 @@
 "use client";
 
 import PlayingAnimation from "@/components/playing-animation";
-import { QueueItem } from "@/lib/types";
+import { SongItem } from "@/lib/types";
 import { playerActions } from "@/store/player-slice";
 import { RootState } from "@/store/store";
 import { useDispatch, useSelector } from "react-redux";
 
 interface Props {
-  queueItem: QueueItem;
+  queueItem: SongItem;
 }
 export default function TrackPlayButton({ queueItem }: Props) {
   const dispatch = useDispatch();

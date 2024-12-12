@@ -2,3 +2,51 @@ version: "3.9"
 
 name: "rhythmony_infrastructure"
 
+services:
+  kc_postgres:
+    image: postgres:14.15-alpine
+    container_name: keycloak_db
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 3
+        max-size: 10m
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    volumes:
+      - keycloak_db:/var/lib/postgres/data
+    restart: unless-stopped
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0.0
+    container_name: keycloak
+    logging:
+      driver: "json-file"
+      options:
+        max-file: 3
+        max-size: 10m
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://kc_postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+
+      KC_HOSTNAME: localhost
+      KC_HOSTNAME_PORT: 8080
+
+      KC_LOG_LEVEL: info
+      KC_HEALTH_ENABLED: true
+      KC_METRICS_ENABLED: true
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin   
+    command: start-dev
+    depends_on:
+      - kc_postgres
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+volumes:
+  keycloak_db:      

@@ -1,14 +1,13 @@
-import { getClient } from "@/lib/apollo-client";
-import { Artist, GetAlbumByIdDocument, Track } from "@/generated/graphql";
 import Image from "next/image";
 import Link from "next/link";
-import PlayPlaylistButton from "@/components/play-playlist-button";
+import { getClient } from "@/lib/apollo-client";
+import { Artist, GetAlbumByIdDocument, Track } from "@/generated/graphql";
+import PlayPlaylistButton from "@/components/playlist/play-playlist-button";
 import { Clock, Dot, Heart } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import PlaylistItem from "@/components/playlist-item";
-import { QueueItem } from "@/lib/types";
+import { SongItem } from "@/lib/types";
 import Gradient from "@/components/gradient";
-import PlaylistContainer from "@/components/playlist-container";
+import PlaylistContainer from "@/components/playlist/playlist-container";
 
 interface AlbumDetailPageProps {
   params: {
@@ -30,8 +29,8 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
   //@ts-expect-error
   const formattedDate = date.toLocaleDateString("en-US", options);
   const releaseYear = date.getFullYear();
-  const queueItems = data?.album?.tracks?.map((track: Track) => {
-    return { track: track, album: data?.album } as QueueItem;
+  const songItems = data?.album?.tracks?.map((track: Track) => {
+    return { track: track, album: data?.album } as SongItem;
   });
 
   if (error) {
@@ -40,11 +39,11 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
   }
   return (
     <>
-      <Gradient className="absolute left-0 top-0" idSelector="album-cover" />
+      <Gradient className="absolute left-0 top-0" idSelector="art-cover" />
       <section className="relative z-20 flex select-none gap-5">
         <div className="relative aspect-square min-w-[128px] max-w-[232px]">
           <Image
-            id="album-cover"
+            id="art-cover"
             src={data?.album?.image!}
             alt={data?.album?.title}
             width={600}
@@ -77,7 +76,7 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
 
           <div className="flex gap-3">
             <PlayPlaylistButton
-              queueItems={queueItems}
+              songItems={songItems}
               notPlayingElement={"Play"}
               className="w-[132px] rounded-full bg-rose-500 py-2 font-bold text-neutral-100 transition-colors hover:bg-rose-600 hover:text-white"
             />
@@ -98,7 +97,7 @@ export default async function AlbumDetailPage({ params }: AlbumDetailPageProps) 
           </span>
         </div>
         <Separator className="my-3 bg-neutral-600" />
-        <PlaylistContainer queueItems={queueItems} />
+        <PlaylistContainer songItems={songItems} />
       </section>
 
       <div className="relative z-20 mt-3 text-neutral-400">

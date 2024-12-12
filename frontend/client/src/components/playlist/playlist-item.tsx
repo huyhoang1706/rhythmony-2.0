@@ -1,12 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import PlayingAnimation from "./playing-animation";
+import PlayingAnimation from "../playing-animation";
 
 import { FaPause, FaPlay } from "react-icons/fa6";
 import { convertMsToMinutesAndSeconds } from "@/lib/utils";
 import { Artist, Maybe, Track } from "@/generated/graphql";
-import { QueueItem } from "@/lib/types";
+import { SongItem } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 import {
@@ -18,25 +18,21 @@ import {
 import { MdMoreHoriz } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { playerActions } from "@/store/player-slice";
-import { playlistActions } from "@/store/playlist-slice";
 
 interface Props {
-  queueItem: QueueItem;
+  songItem: SongItem;
   order: number;
   artists?: Maybe<Array<Artist>>;
   onClick: () => void;
 }
 
-export default function PlaylistItem({ queueItem, order, artists, onClick }: Props) {
+export default function PlaylistItem({ songItem, order, artists, onClick }: Props) {
   const { current, isPlaying } = useSelector((state: RootState) => state.player);
 
   const playing =
-    isPlaying &&
-    queueItem.track.id === current?.track.id &&
-    queueItem.album.id === current?.album.id;
-  const track = queueItem.track;
-  const album = queueItem.album;
+    isPlaying && songItem.track.id === current?.track.id && songItem.album.id === current?.album.id;
+  const track = songItem.track;
+  const album = songItem.album;
 
   return (
     <div

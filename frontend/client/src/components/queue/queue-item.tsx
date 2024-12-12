@@ -1,7 +1,7 @@
 "use client";
 
 import { Artist } from "@/generated/graphql";
-import { QueueItem } from "@/lib/types";
+import { SongItem } from "@/lib/types";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -17,11 +17,11 @@ import { RootState } from "@/store/store";
 import { playerActions } from "@/store/player-slice";
 
 interface Props {
-  queueItem: QueueItem;
+  queueItem: SongItem;
   removable: boolean;
 }
 
-export default function QueueIt({ queueItem, removable }: Props) {
+export default function QueueItem({ queueItem, removable }: Props) {
   const dispatch = useDispatch();
   const { isPlaying, current } = useSelector((state: RootState) => state.player);
   const playing = queueItem.track.id === current?.track.id && isPlaying;

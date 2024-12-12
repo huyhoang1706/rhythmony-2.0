@@ -1,4 +1,4 @@
-import { QueueItem } from "@/lib/types";
+import { SongItem } from "@/lib/types";
 import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
 
 export type RepeatMode = "off" | "one" | "all";
@@ -6,12 +6,12 @@ export type PlaybackStatus = "idle" | "playing" | "paused" | "loading";
 
 export interface PlayerState {
   queues: {
-    nextInQueue: QueueItem[];
-    nextFromPlaylist: QueueItem[];
-    playHistory: QueueItem[];
-    originalNextFromPlaylist: QueueItem[];
+    nextInQueue: SongItem[];
+    nextFromPlaylist: SongItem[];
+    playHistory: SongItem[];
+    originalNextFromPlaylist: SongItem[];
   };
-  current: QueueItem | null;
+  current: SongItem | null;
   isPlaying: boolean;
   playbackStatus: PlaybackStatus;
   repeatMode: RepeatMode;
@@ -37,7 +37,7 @@ const playerSlice = createSlice({
     prevVolume: 100,
   } as PlayerState,
   reducers: {
-    setCurrentTrack: (state, action: PayloadAction<QueueItem>) => {
+    setCurrentTrack: (state, action: PayloadAction<SongItem>) => {
       // const nextFromPlaylist = state.queues.nextFromPlaylist;
       // if (nextFromPlaylist.length !== 0) {
       //   const index = nextFromPlaylist.indexOf(action.payload);
@@ -59,16 +59,16 @@ const playerSlice = createSlice({
       state.isPlaying = !state.isPlaying;
       state.playbackStatus = state.isPlaying ? "playing" : "paused";
     },
-    setPlaylistQueue: (state, action: PayloadAction<QueueItem[]>) => {
+    setPlaylistQueue: (state, action: PayloadAction<SongItem[]>) => {
       state.queues.nextFromPlaylist = action.payload;
       state.queues.originalNextFromPlaylist = [...action.payload];
     },
-    addToPlayHistory: (state, action: PayloadAction<QueueItem[]>) => {
+    addToPlayHistory: (state, action: PayloadAction<SongItem[]>) => {
       state.queues.playHistory = action.payload;
     },
     addToQueue: (
       state,
-      action: PayloadAction<{ item: QueueItem; queueType: keyof PlayerState["queues"] }>,
+      action: PayloadAction<{ item: SongItem; queueType: keyof PlayerState["queues"] }>,
     ) => {
       const { item, queueType } = action.payload;
       state.queues[queueType].push(item);

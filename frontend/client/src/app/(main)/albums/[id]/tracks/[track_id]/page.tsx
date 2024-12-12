@@ -34,11 +34,11 @@ export default async function TrackDetailPage({ params }: Props) {
 
   return (
     <>
-      <Gradient className="absolute left-0 top-0" idSelector="album-cover" />
+      <Gradient className="absolute left-0 top-0" idSelector="art-cover" />
       <section className="relative z-20 flex select-none gap-5">
         <div className="relative aspect-square min-w-[128px] max-w-[232px]">
           <Image
-            id="album-cover"
+            id="art-cover"
             src={data?.album?.image!}
             alt={data?.track?.title}
             width={600}

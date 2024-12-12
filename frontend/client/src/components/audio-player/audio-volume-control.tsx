@@ -2,7 +2,7 @@
 
 import { Volume2Icon, VolumeX } from "lucide-react";
 import React, { RefObject, useState } from "react";
-import { Slider } from "./ui/slider";
+import { Slider } from "../ui/slider";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store/store";
 import { playerActions } from "@/store/player-slice";

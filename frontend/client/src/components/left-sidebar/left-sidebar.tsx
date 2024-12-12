@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { PlusCircle } from "lucide-react";
 import NavLink from "./nav-link";
-import Playlist from "./playlist";
+import Playlist from "../playlist/playlist";
 import { cn } from "@/lib/utils";
 import { PiHouseFill, PiHeart, PiHouseThin, PiHeartFill } from "react-icons/pi";
 import { MdLibraryMusic, MdOutlineLibraryMusic } from "react-icons/md";

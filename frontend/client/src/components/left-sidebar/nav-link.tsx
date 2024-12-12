@@ -29,8 +29,8 @@ export default function NavLink({ href, name, className, Icon, collapsed, Active
       )}
     >
       {isActive
-        ? ActiveIcon && <ActiveIcon className="size-6 text-white" />
-        : Icon && <Icon className="size-6 text-neutral-400" />}
+        ? ActiveIcon && <ActiveIcon className="size-7 text-white" />
+        : Icon && <Icon className="size-7 text-neutral-400" />}
       {!collapsed && (
         <span className={cn("truncate text-sm md:text-lg", isActive ? "text-white" : "")}>
           {name}
